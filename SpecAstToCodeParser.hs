@@ -32,10 +32,10 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
         bitchartoparser '1' = matchBit 1
         bitchartoparser _ = anyBit
 
-literal :: Spec.Field -> Parser (Code.Field a)
-literal (Spec.Field label payload) = do
+literal :: Code.FieldLabel a => Spec.Field -> a -> Parser (Code.Field a)
+literal (Spec.Field label payload) fieldtype = do
     bitsparsed <- sequence (bitSpecToParsers payload)
-    return (Code.Field label bitsparsed)
+    return (Code.Field fieldtype bitsparsed)
 {-
 -- this needs to be in the instruction set specification, and should be passed
 -- in to the functions that need it
