@@ -9,6 +9,7 @@ import Data.Bit
 
 -- this should be an instance of a typeclass that I can use to write a
 -- polymorphic function on instructions
+-- this is maybe the only thing the end user needs to define
 data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
     deriving (Show)
 
