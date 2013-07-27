@@ -7,9 +7,6 @@ module CodeAst where
 
 import Data.Bit
 
-class FieldLabel a
-class InstructionLabel a
-
 data Field a = Field a [Bit]
     deriving (Show)
 

@@ -32,7 +32,7 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
         bitchartoparser '1' = matchBit 1
         bitchartoparser _ = anyBit
 
-literal :: Code.FieldLabel a => Spec.Field -> a -> Parser (Code.Field a)
+literal :: Spec.Field -> a -> Parser (Code.Field a)
 literal (Spec.Field label payload) fieldtype = do
     bitsparsed <- sequence (bitSpecToParsers payload)
     return (Code.Field fieldtype bitsparsed)
