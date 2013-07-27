@@ -32,11 +32,11 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
         bitchartoparser '1' = matchBit 1
         bitchartoparser _ = anyBit
 
-literal :: Spec.Field -> Parser Code.DcpuField
-literal (Spec.Field Spec.FieldLiteral payload) = do
+literal :: Spec.Field -> Parser (Code.Field a)
+literal (Spec.Field label payload) = do
     bitsparsed <- sequence (bitSpecToParsers payload)
-    return (Code.DcpuField Code.DcpuLiteralBits bitsparsed "literal bits")
-
+    return (Code.Field label bitsparsed)
+{-
 -- this needs to be in the instruction set specification, and should be passed
 -- in to the functions that need it
 interpretSpecSubstring :: String -> Code.DcpuFieldType
@@ -71,6 +71,6 @@ specToParser (Spec.InstructionSpec name fields) = do
 
 specsToParser :: [Spec.InstructionSpec] -> Parser Code.DcpuInstruction
 specsToParser specs = choice $ map (try . specToParser) specs
-
+-}
 
 -- vim:sw=4:ts=4:et:ai:
