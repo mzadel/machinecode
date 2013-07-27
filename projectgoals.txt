@@ -1,0 +1,25 @@
+
+goals
+ simple executable specification
+  -> minimal syntax wrt table of instructions
+ writeable by people who don't know haskell
+
+audience
+ for people learning assembly
+ for people implementing assemblers, for verification
+
+values
+ focuses on old/esoteric instruction sets
+ pretty printer, not disassembler
+
+
+questions:
+ can parsec only parse character strings?
+ how can I just skip whitespace entirely w/o returning it?
+ how can I avoid do notation?
+ what do the applicative combinators do?
+
+notes:
+ the ast types should have contain the bit string that defines them, and the
+ offset into the instruction so it'll be easier to pretty-print
+
