@@ -10,7 +10,6 @@ import Data.Bit
 data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
     deriving (Show)
 
--- field type, its payload (string of bits), interpretation
 data Field a = Field a [Bit]
     deriving (Show)
 
