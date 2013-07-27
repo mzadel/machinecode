@@ -7,9 +7,6 @@ module CodeAst where
 
 import Data.Bit
 
-data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
-    deriving (Show)
-
 data Field a = Field a [Bit]
     deriving (Show)
 

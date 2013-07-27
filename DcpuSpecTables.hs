@@ -9,6 +9,9 @@ import BitList (bitsFromByte)
 import Data.Word (Word8)
 import Data.Bit  (Bit)
 
+data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
+    deriving (Show)
+
 instrspecs = [
         ( "Aaaaaa0000100000", "JSR a" ),
         ( "Aaaaaa0100000000", "INT a" ),
