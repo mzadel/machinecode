@@ -22,6 +22,17 @@ instrspecs = [
     ]
 
 
+-- this next thing should include: string to be mapped from, then field type,
+-- then annotation
+-- ( "Aaaaaa", "010101", DcpuRegA, "this means yadda" )
+-- then maybe I can can curry these?  like partially apply "Aaaaaa"
+-- and then apply the "010101", and then get the values back
+--
+-- Maybe I should make the field description part of the field type
+--
+-- Also, I need to include the ability to add functions for interpreting a
+-- given value and pretty-printing the value
+
 -- list reg a interpretations in hex.  do it this way so it matches the spec
 -- document, even though we only use the 6 lower-order bits.  regaspecshex is
 -- converted to regaspecs, which specifies the register a contents as a Char
