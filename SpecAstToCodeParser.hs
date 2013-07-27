@@ -32,6 +32,9 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
         bitchartoparser '1' = matchBit 1
         bitchartoparser _ = anyBit
 
+-- so here should there be that function that takes the spec string and the
+-- literal bits, and spits out an interpretation?
+-- literal :: Spec.Field -> (String -> [Bit] -> a) -> Parser (Code.Field a)
 literal :: Spec.Field -> a -> Parser (Code.Field a)
 literal (Spec.Field label payload) fieldtype = do
     bitsparsed <- sequence (bitSpecToParsers payload)
