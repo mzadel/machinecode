@@ -35,7 +35,7 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 specFieldToCodeFieldParser :: S.Field -> (String -> String -> a) -> Parser (C.Field a)
 specFieldToCodeFieldParser _ _ = return (C.Field ())
 
---specFieldToCodeFieldParser (S.Field spectype specstring) convert =
+specFieldToCodeFieldParser (S.Field S.Literal specstring) convert =
 
 {-
 -- so here should there be that function that takes the spec string and the
@@ -54,7 +54,7 @@ interpretSpecSubstring "Bbbbb" = C.DcpuRegB
 interpretSpecSubstring "Dddddddddddddddd" = C.DcpuOptionalWord
 
 variable :: S.Field -> Parser C.DcpuField
-variable (S.Field S.FieldVariable payload) = do
+variable (S.Field S.Variable payload) = do
     bitsparsed <- bitSpecToParser payload
     return (C.DcpuField fieldtype bitsparsed description)
     where
@@ -67,8 +67,8 @@ specFieldType (S.Field t _) = t
 specFieldToParser :: S.Field -> Parser C.Field
 specFieldToParser field = dispatchfieldtype (specFieldType field) $ field
     where
-        dispatchfieldtype S.FieldLiteral = literal
-        dispatchfieldtype S.FieldVariable = variable
+        dispatchfieldtype S.Literal = literal
+        dispatchfieldtype S.Variable = variable
 
 specFieldsToParsers :: [S.Field] -> [Parser C.Field]
 specFieldsToParsers specs = map specFieldToParser specs

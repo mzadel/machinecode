@@ -18,14 +18,14 @@ type Parser = Parsec String ()
 fieldliteral :: Parser Field
 fieldliteral = do
     result <- many1 ( char '1' <|> char '0' )
-    return $ Field FieldLiteral result
+    return $ Field Literal result
 
 -- is there a simpler way to express this?
 fieldvariable :: Parser Field
 fieldvariable = do
     a <- upper
     rest <- many lower
-    return $ Field FieldVariable ([a]++rest)
+    return $ Field Variable ([a]++rest)
 
 field :: Parser Field
 field = do

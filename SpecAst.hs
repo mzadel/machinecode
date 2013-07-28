@@ -5,7 +5,7 @@
 
 module SpecAst where
 
-data FieldType = FieldLiteral | FieldVariable
+data FieldType = Literal | Variable
     deriving (Show)
 data Field = Field FieldType String
     deriving (Show)
