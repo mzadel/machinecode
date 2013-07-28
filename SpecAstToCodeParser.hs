@@ -42,7 +42,7 @@ specFieldToCodeFieldParser convert (S.Field S.Literal specstring) = do
     bitsparsed <- bitSpecToParser specstring
     fieldtype <- convert specstring bitsparsed
     return (C.Field C.Variable fieldtype bitsparsed)
-
+{-
 specFieldsToParsers :: (String -> String -> a) -> [S.Field] -> [Parser (C.Field a)]
 specFieldsToParsers convert specs = map (specFieldToCodeFieldParser convert) specs
 
@@ -53,5 +53,5 @@ specToParser convert (S.InstructionSpec name fields) = do
 
 specsToParser :: (String -> String -> a) -> [S.InstructionSpec] -> Parser (C.Instruction a b)
 specsToParser convert specs = choice $ map (try . (specToParser convert)) specs
-
+-}
 -- vim:sw=4:ts=4:et:ai:
