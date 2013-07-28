@@ -11,8 +11,8 @@
 module SpecAstToCodeParser where
 
 import SpecAstToCodeParserInternal
-import qualified SpecAst as Spec
-import qualified CodeAst as Code
+import qualified SpecAst as S
+import qualified CodeAst as C
 import Data.Bit
 import Text.Parsec.Prim
 import Text.Parsec.Combinator (choice)
@@ -32,52 +32,53 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
-specFieldToCodeFieldParser :: Spec.Field -> (String -> String -> a) -> Parser (Code.Field a)
-specFieldToCodeFieldParser _ _ = return (Code.Field ())
+specFieldToCodeFieldParser :: S.Field -> (String -> String -> a) -> Parser (C.Field a)
+specFieldToCodeFieldParser _ _ = return (C.Field ())
 
---specFieldToCodeFieldParser (Spec.Field spectype specstring) convert =
+--specFieldToCodeFieldParser (S.Field spectype specstring) convert =
 
+{-
 -- so here should there be that function that takes the spec string and the
 -- literal bits, and spits out an interpretation?
--- literal :: Spec.Field -> (String -> [Bit] -> a) -> Parser (Code.Field a)
-literal :: Spec.Field -> a -> Parser (Code.Field a)
-literal (Spec.Field _ payload) fieldtype = do
+-- literal :: S.Field -> (String -> [Bit] -> a) -> Parser (C.Field a)
+literal :: S.Field -> a -> Parser (C.Field a)
+literal (S.Field _ payload) fieldtype = do
     bitsparsed <- bitSpecToParser payload
-    return (Code.Field fieldtype bitsparsed)
-{-
+    return (C.Field fieldtype bitsparsed)
+
 -- this needs to be in the instruction set specification, and should be passed
 -- in to the functions that need it
-interpretSpecSubstring :: String -> Code.DcpuFieldType
-interpretSpecSubstring "Aaaaaa" = Code.DcpuRegA
-interpretSpecSubstring "Bbbbb" = Code.DcpuRegB
-interpretSpecSubstring "Dddddddddddddddd" = Code.DcpuOptionalWord
+interpretSpecSubstring :: String -> C.DcpuFieldType
+interpretSpecSubstring "Aaaaaa" = C.DcpuRegA
+interpretSpecSubstring "Bbbbb" = C.DcpuRegB
+interpretSpecSubstring "Dddddddddddddddd" = C.DcpuOptionalWord
 
-variable :: Spec.Field -> Parser Code.DcpuField
-variable (Spec.Field Spec.FieldVariable payload) = do
+variable :: S.Field -> Parser C.DcpuField
+variable (S.Field S.FieldVariable payload) = do
     bitsparsed <- bitSpecToParser payload
-    return (Code.DcpuField fieldtype bitsparsed description)
+    return (C.DcpuField fieldtype bitsparsed description)
     where
         description = payload
         fieldtype = interpretSpecSubstring payload
 -}
-specFieldType :: Spec.Field -> Spec.FieldType
-specFieldType (Spec.Field t _) = t
+specFieldType :: S.Field -> S.FieldType
+specFieldType (S.Field t _) = t
 
-specFieldToParser :: Spec.Field -> Parser Code.Field
+specFieldToParser :: S.Field -> Parser C.Field
 specFieldToParser field = dispatchfieldtype (specFieldType field) $ field
     where
-        dispatchfieldtype Spec.FieldLiteral = literal
-        dispatchfieldtype Spec.FieldVariable = variable
+        dispatchfieldtype S.FieldLiteral = literal
+        dispatchfieldtype S.FieldVariable = variable
 
-specFieldsToParsers :: [Spec.Field] -> [Parser Code.Field]
+specFieldsToParsers :: [S.Field] -> [Parser C.Field]
 specFieldsToParsers specs = map specFieldToParser specs
 
-specToParser :: Spec.InstructionSpec -> Parser Code.Instruction
-specToParser (Spec.InstructionSpec name fields) = do
+specToParser :: S.InstructionSpec -> Parser C.Instruction
+specToParser (S.InstructionSpec name fields) = do
     parsedfields <- sequence $ specFieldsToParsers fields
-    return (Code.Instruction name parsedfields)
+    return (C.Instruction name parsedfields)
 
-specsToParser :: [Spec.InstructionSpec] -> Parser Code.Instruction
+specsToParser :: [S.InstructionSpec] -> Parser C.Instruction
 specsToParser specs = choice $ map (try . specToParser) specs
 
 
