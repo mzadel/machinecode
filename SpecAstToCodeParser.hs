@@ -21,10 +21,10 @@ import StreamInstance
 type Parser = Parsec [Bit] ()
 
 -- takes a character string representing bits expected (one char per bit, from
--- '0','1', [A-Z] or [a-z] (no spaces allowed!)) and returns a list of parsers
+-- '0','1', [A-Z] or [a-z] (no spaces allowed!)) and returns a parser
 -- that will match those bits
-bitSpecToParsers :: String -> [Parser Bit]
-bitSpecToParsers bitchars = map bitchartoparser bitchars
+bitSpecToParser :: String -> Parser [Bit]
+bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
     where
         bitchartoparser '0' = matchBit 0
         bitchartoparser '1' = matchBit 1
@@ -42,7 +42,7 @@ specFieldToCodeFieldParser _ _ = return (Code.Field ())
 -- literal :: Spec.Field -> (String -> [Bit] -> a) -> Parser (Code.Field a)
 literal :: Spec.Field -> a -> Parser (Code.Field a)
 literal (Spec.Field _ payload) fieldtype = do
-    bitsparsed <- sequence (bitSpecToParsers payload)
+    bitsparsed <- bitSpecToParser payload
     return (Code.Field fieldtype bitsparsed)
 {-
 -- this needs to be in the instruction set specification, and should be passed
@@ -54,7 +54,7 @@ interpretSpecSubstring "Dddddddddddddddd" = Code.DcpuOptionalWord
 
 variable :: Spec.Field -> Parser Code.DcpuField
 variable (Spec.Field Spec.FieldVariable payload) = do
-    bitsparsed <- sequence (bitSpecToParsers payload)
+    bitsparsed <- bitSpecToParser payload
     return (Code.DcpuField fieldtype bitsparsed description)
     where
         description = payload
