@@ -36,7 +36,7 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
 -- literal bits, and spits out an interpretation?
 -- literal :: Spec.Field -> (String -> [Bit] -> a) -> Parser (Code.Field a)
 literal :: Spec.Field -> a -> Parser (Code.Field a)
-literal (Spec.Field label payload) fieldtype = do
+literal (Spec.Field _ payload) fieldtype = do
     bitsparsed <- sequence (bitSpecToParsers payload)
     return (Code.Field fieldtype bitsparsed)
 {-
