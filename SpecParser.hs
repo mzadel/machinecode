@@ -3,8 +3,6 @@
 -- SpecParser.hs
 --
 
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
-
 module SpecParser (specToAst) where
 
 import SpecAst
