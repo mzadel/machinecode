@@ -54,26 +54,26 @@ variable (Spec.Field Spec.FieldVariable payload) = do
     where
         description = payload
         fieldtype = interpretSpecSubstring payload
-
+-}
 specFieldType :: Spec.Field -> Spec.FieldType
 specFieldType (Spec.Field t _) = t
 
-specFieldToParser :: Spec.Field -> Parser Code.DcpuField
+specFieldToParser :: Spec.Field -> Parser Code.Field
 specFieldToParser field = dispatchfieldtype (specFieldType field) $ field
     where
         dispatchfieldtype Spec.FieldLiteral = literal
         dispatchfieldtype Spec.FieldVariable = variable
 
-specFieldsToParsers :: [Spec.Field] -> [Parser Code.DcpuField]
+specFieldsToParsers :: [Spec.Field] -> [Parser Code.Field]
 specFieldsToParsers specs = map specFieldToParser specs
 
-specToParser :: Spec.InstructionSpec -> Parser Code.DcpuInstruction
+specToParser :: Spec.InstructionSpec -> Parser Code.Instruction
 specToParser (Spec.InstructionSpec name fields) = do
     parsedfields <- sequence $ specFieldsToParsers fields
-    return (Code.DcpuInstruction name parsedfields)
+    return (Code.Instruction name parsedfields)
 
-specsToParser :: [Spec.InstructionSpec] -> Parser Code.DcpuInstruction
+specsToParser :: [Spec.InstructionSpec] -> Parser Code.Instruction
 specsToParser specs = choice $ map (try . specToParser) specs
--}
+
 
 -- vim:sw=4:ts=4:et:ai:
