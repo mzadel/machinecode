@@ -122,4 +122,11 @@ regaspecs = zip (map (lobitstring 6) vals) labels
         (vals,labels) = unzip regaspecshex
 
 
+
+-- idea for mapping between the variable fields: use pattern matching in a
+-- function like this
+--mapvarfield "Aaaaaa" "010010" = ( DcpuRegA, "A" )
+--mapvarfield "Aaaaaa" "010100" = ( DcpuRegA, "B" )
+
+
 -- vim:sw=4:ts=4:et:ai:
