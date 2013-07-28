@@ -30,6 +30,13 @@ bitSpecToParsers bitchars = map bitchartoparser bitchars
         bitchartoparser '1' = matchBit 1
         bitchartoparser _ = anyBit
 
+-- signature for the function to convert a spec field to a code field
+-- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
+specFieldToCodeFieldParser :: Spec.Field -> (String -> String -> a) -> Parser (Code.Field a)
+specFieldToCodeFieldParser _ _ = return (Code.Field ())
+
+--specFieldToCodeFieldParser (Spec.Field spectype specstring) convert =
+
 -- so here should there be that function that takes the spec string and the
 -- literal bits, and spits out an interpretation?
 -- literal :: Spec.Field -> (String -> [Bit] -> a) -> Parser (Code.Field a)
