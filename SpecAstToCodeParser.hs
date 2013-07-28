@@ -32,16 +32,17 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
-specFieldToCodeFieldParser :: (String -> String -> a) -> S.Field -> Parser (C.Field a)
+specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Field a)
 
-specFieldToCodeFieldParser _ (S.Field S.Literal specstring) = do
-    bitsparsed <- bitSpecToParser specstring
-    return (C.Field C.Literal () bitsparsed)
-
-specFieldToCodeFieldParser convert (S.Field S.Literal specstring) = do
+specFieldToCodeFieldParser convert (S.Field intype specstring) = do
     bitsparsed <- bitSpecToParser specstring
     fieldtype <- convert specstring bitsparsed
-    return (C.Field C.Variable fieldtype bitsparsed)
+    return (C.Field outtype fieldtype bitsparsed)
+    where
+        outtype = case intype of
+            S.Literal -> C.Literal
+            S.Variable -> C.Variable
+
 {-
 specFieldsToParsers :: (String -> String -> a) -> [S.Field] -> [Parser (C.Field a)]
 specFieldsToParsers convert specs = map (specFieldToCodeFieldParser convert) specs
