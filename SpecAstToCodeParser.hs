@@ -3,8 +3,6 @@
 -- SpecAstToCodeParser.hs
 --
 
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
-
 -- functions to convert a SpecAst node to a parser that goes from bits to
 -- CodeAst nodes
 
