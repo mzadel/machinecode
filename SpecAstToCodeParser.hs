@@ -32,61 +32,26 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
-specFieldToCodeFieldParser :: S.Field -> (String -> String -> a) -> Parser (C.Field a)
+specFieldToCodeFieldParser :: (String -> String -> a) -> S.Field -> Parser (C.Field a)
 
-specFieldToCodeFieldParser (S.Field S.Literal specstring) _ = do
+specFieldToCodeFieldParser _ (S.Field S.Literal specstring) = do
     bitsparsed <- bitSpecToParser specstring
     return (C.Field C.Literal () bitsparsed)
 
-specFieldToCodeFieldParser (S.Field S.Literal specstring) convert = do
+specFieldToCodeFieldParser convert (S.Field S.Literal specstring) = do
     bitsparsed <- bitSpecToParser specstring
     fieldtype <- convert specstring bitsparsed
     return (C.Field C.Variable fieldtype bitsparsed)
 
+specFieldsToParsers :: (String -> String -> a) -> [S.Field] -> [Parser (C.Field a)]
+specFieldsToParsers convert specs = map (specFieldToCodeFieldParser convert) specs
 
-{-
--- so here should there be that function that takes the spec string and the
--- literal bits, and spits out an interpretation?
--- literal :: S.Field -> (String -> [Bit] -> a) -> Parser (C.Field a)
-literal :: S.Field -> a -> Parser (C.Field a)
-literal (S.Field _ payload) fieldtype = do
-    bitsparsed <- bitSpecToParser payload
-    return (C.Field fieldtype bitsparsed)
-
--- this needs to be in the instruction set specification, and should be passed
--- in to the functions that need it
-interpretSpecSubstring :: String -> C.DcpuFieldType
-interpretSpecSubstring "Aaaaaa" = C.DcpuRegA
-interpretSpecSubstring "Bbbbb" = C.DcpuRegB
-interpretSpecSubstring "Dddddddddddddddd" = C.DcpuOptionalWord
-
-variable :: S.Field -> Parser C.DcpuField
-variable (S.Field S.Variable payload) = do
-    bitsparsed <- bitSpecToParser payload
-    return (C.DcpuField fieldtype bitsparsed description)
-    where
-        description = payload
-        fieldtype = interpretSpecSubstring payload
--}
-specFieldType :: S.Field -> S.FieldType
-specFieldType (S.Field t _) = t
-
-specFieldToParser :: S.Field -> Parser C.Field
-specFieldToParser field = dispatchfieldtype (specFieldType field) $ field
-    where
-        dispatchfieldtype S.Literal = literal
-        dispatchfieldtype S.Variable = variable
-
-specFieldsToParsers :: [S.Field] -> [Parser C.Field]
-specFieldsToParsers specs = map specFieldToParser specs
-
-specToParser :: S.InstructionSpec -> Parser C.Instruction
-specToParser (S.InstructionSpec name fields) = do
-    parsedfields <- sequence $ specFieldsToParsers fields
+specToParser :: (String -> String -> a) -> S.InstructionSpec -> Parser (C.Instruction a b)
+specToParser convert (S.InstructionSpec name fields) = do
+    parsedfields <- sequence $ specFieldsToParsers convert fields
     return (C.Instruction name parsedfields)
 
-specsToParser :: [S.InstructionSpec] -> Parser C.Instruction
-specsToParser specs = choice $ map (try . specToParser) specs
-
+specsToParser :: (String -> String -> a) -> [S.InstructionSpec] -> Parser (C.Instruction a b)
+specsToParser convert specs = choice $ map (try . (specToParser convert)) specs
 
 -- vim:sw=4:ts=4:et:ai:
