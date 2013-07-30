@@ -33,13 +33,15 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
 specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Field a)
-specFieldToCodeFieldParser convert (S.Field intype specstring) = do
+
+specFieldToCodeFieldParser convert (S.Field S.Literal specstring) = do
     bitsparsed <- bitSpecToParser specstring
-    return (C.Field outtype (convert specstring bitsparsed) bitsparsed)
-    where
-        outtype = case intype of
-            S.Literal -> C.Literal
-            S.Variable -> C.Variable
+    return (C.Field C.Literal (convert "literal" bitsparsed) bitsparsed)
+
+specFieldToCodeFieldParser convert (S.Field S.Variable specstring) = do
+    bitsparsed <- bitSpecToParser specstring
+    return (C.Field C.Variable (convert specstring bitsparsed) bitsparsed)
+
 
 -- convert one spec to a parser for that spec
 -- NB: we're hardcoding the first field of CodeAst.InstructionSpec (the

@@ -41,6 +41,7 @@ lobitstring length inbyte = drop (8-length) $ bitsFromByte inbyte
 
 convert :: String -> [Bit] -> (DcpuFieldType,String)
 convert specstring parsedbits = case specstring of
+    "literal" -> (DcpuLiteralBits,"literal")
     "Aaaaaa" -> convertAaaaaa parsedbits
     where
         convertAaaaaa bits
