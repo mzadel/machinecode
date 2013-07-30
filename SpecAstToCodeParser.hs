@@ -33,7 +33,6 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
 specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Field a)
-
 specFieldToCodeFieldParser convert (S.Field intype specstring) = do
     bitsparsed <- bitSpecToParser specstring
     return (C.Field outtype (convert specstring bitsparsed) bitsparsed)
@@ -42,16 +41,12 @@ specFieldToCodeFieldParser convert (S.Field intype specstring) = do
             S.Literal -> C.Literal
             S.Variable -> C.Variable
 
-{-
-specFieldsToParsers :: (String -> String -> a) -> [S.Field] -> [Parser (C.Field a)]
-specFieldsToParsers convert specs = map (specFieldToCodeFieldParser convert) specs
-
-specToParser :: (String -> String -> a) -> S.InstructionSpec -> Parser (C.Instruction a b)
+specToParser :: (String -> [Bit] -> a) -> S.InstructionSpec -> Parser (C.Instruction String a)
 specToParser convert (S.InstructionSpec name fields) = do
-    parsedfields <- sequence $ specFieldsToParsers convert fields
+    parsedfields <- sequence $ map (specFieldToCodeFieldParser convert) fields
     return (C.Instruction name parsedfields)
 
-specsToParser :: (String -> String -> a) -> [S.InstructionSpec] -> Parser (C.Instruction a b)
+specsToParser :: (String -> [Bit] -> a) -> [S.InstructionSpec] -> Parser (C.Instruction String a)
 specsToParser convert specs = choice $ map (try . (specToParser convert)) specs
--}
+
 -- vim:sw=4:ts=4:et:ai:
