@@ -8,6 +8,13 @@ module DcpuSpecTables where
 import BitList (bitsFromByte)
 import Data.Word (Word8)
 import Data.Bit  (Bit)
+import qualified CodeAst as Code
+import qualified SpecAst as Spec
+import SpecParser
+import SpecAstToCodeParser
+import Data.Either (rights)
+import Text.Parsec.Prim
+import Text.Parsec.Error (ParseError)
 
 data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
     deriving (Show)
@@ -40,86 +47,91 @@ instrspecs = [
 -- document, even though we only use the 6 lower-order bits.  regaspecshex is
 -- converted to regaspecs, which specifies the register a contents as a Char
 -- bit spec string
-regaspecshex = [
-
-        ( 0x00, "A" ),
-        ( 0x01, "B" ),
-        ( 0x02, "C" ),
-        ( 0x03, "X" ),
-        ( 0x04, "Y" ),
-        ( 0x05, "Z" ),
-        ( 0x06, "I" ),
-        ( 0x07, "J" ),
-        ( 0x08, "[A]" ),
-        ( 0x09, "[B]" ),
-        ( 0x0a, "[C]" ),
-        ( 0x0b, "[X]" ),
-        ( 0x0c, "[Y]" ),
-        ( 0x0d, "[Z]" ),
-        ( 0x0e, "[I]" ),
-        ( 0x0f, "[J]" ),
-        ( 0x10, "[A + next word]" ),
-        ( 0x11, "[B + next word]" ),
-        ( 0x12, "[C + next word]" ),
-        ( 0x13, "[X + next word]" ),
-        ( 0x14, "[Y + next word]" ),
-        ( 0x15, "[Z + next word]" ),
-        ( 0x16, "[I + next word]" ),
-        ( 0x17, "[J + next word]" ),
-        ( 0x18, "(POP / [SP++])" ),
-        ( 0x19, "[SP] / PEEK" ),
-        ( 0x1a, "[SP + next word] / PICK n" ),
-        ( 0x1b, "SP" ),
-        ( 0x1c, "PC" ),
-        ( 0x1d, "EX" ),
-        ( 0x1e, "[next word]" ),
-        ( 0x1f, "next word (literal)" ),
-
-        ( 0x20, "literal -1" ),
-        ( 0x21, "literal 0" ),
-        ( 0x22, "literal 1" ),
-        ( 0x23, "literal 2" ),
-        ( 0x24, "literal 3" ),
-        ( 0x25, "literal 4" ),
-        ( 0x26, "literal 5" ),
-        ( 0x27, "literal 6" ),
-        ( 0x28, "literal 7" ),
-        ( 0x29, "literal 8" ),
-        ( 0x2a, "literal 9" ),
-        ( 0x2b, "literal 10" ),
-        ( 0x2c, "literal 11" ),
-        ( 0x2d, "literal 12" ),
-        ( 0x2e, "literal 13" ),
-        ( 0x2f, "literal 14" ),
-        ( 0x30, "literal 15" ),
-        ( 0x31, "literal 16" ),
-        ( 0x32, "literal 17" ),
-        ( 0x33, "literal 18" ),
-        ( 0x34, "literal 19" ),
-        ( 0x35, "literal 20" ),
-        ( 0x36, "literal 21" ),
-        ( 0x37, "literal 22" ),
-        ( 0x38, "literal 23" ),
-        ( 0x39, "literal 24" ),
-        ( 0x3a, "literal 25" ),
-        ( 0x3b, "literal 26" ),
-        ( 0x3c, "literal 27" ),
-        ( 0x3d, "literal 28" ),
-        ( 0x3e, "literal 29" ),
-        ( 0x3f, "literal 30" )
-
-    ]
 
 -- compute a bit string from the input byte from its low order bits, listed
 -- most significant bit first
 lobitstring :: Int -> Word8 -> [Bit]
 lobitstring length inbyte = drop (8-length) $ bitsFromByte inbyte
 
--- compute the approprate bit string from the hex value
-regaspecs :: [ ([Bit],String) ]
-regaspecs = zip (map (lobitstring 6) vals) labels
+convert :: String -> [Bit] -> (DcpuFieldType,String)
+convert specstring parsedbits = case specstring of
+    "Aaaaaa" -> convertAaaaaa parsedbits
     where
-        (vals,labels) = unzip regaspecshex
+        convertAaaaaa bits
+            | bits == lobitstring 6 0x00 = ( DcpuRegA, "A" )
+            | bits == lobitstring 6 0x01 = ( DcpuRegA, "B" )
+            | bits == lobitstring 6 0x02 = ( DcpuRegA, "C" )
+            | bits == lobitstring 6 0x03 = ( DcpuRegA, "X" )
+            | bits == lobitstring 6 0x04 = ( DcpuRegA, "Y" )
+            | bits == lobitstring 6 0x05 = ( DcpuRegA, "Z" )
+            | bits == lobitstring 6 0x06 = ( DcpuRegA, "I" )
+            | bits == lobitstring 6 0x07 = ( DcpuRegA, "J" )
+            | bits == lobitstring 6 0x08 = ( DcpuRegA, "[A]" )
+            | bits == lobitstring 6 0x09 = ( DcpuRegA, "[B]" )
+            | bits == lobitstring 6 0x0a = ( DcpuRegA, "[C]" )
+            | bits == lobitstring 6 0x0b = ( DcpuRegA, "[X]" )
+            | bits == lobitstring 6 0x0c = ( DcpuRegA, "[Y]" )
+            | bits == lobitstring 6 0x0d = ( DcpuRegA, "[Z]" )
+            | bits == lobitstring 6 0x0e = ( DcpuRegA, "[I]" )
+            | bits == lobitstring 6 0x0f = ( DcpuRegA, "[J]" )
+            | bits == lobitstring 6 0x10 = ( DcpuRegA, "[A + next word]" )
+            | bits == lobitstring 6 0x11 = ( DcpuRegA, "[B + next word]" )
+            | bits == lobitstring 6 0x12 = ( DcpuRegA, "[C + next word]" )
+            | bits == lobitstring 6 0x13 = ( DcpuRegA, "[X + next word]" )
+            | bits == lobitstring 6 0x14 = ( DcpuRegA, "[Y + next word]" )
+            | bits == lobitstring 6 0x15 = ( DcpuRegA, "[Z + next word]" )
+            | bits == lobitstring 6 0x16 = ( DcpuRegA, "[I + next word]" )
+            | bits == lobitstring 6 0x17 = ( DcpuRegA, "[J + next word]" )
+            | bits == lobitstring 6 0x18 = ( DcpuRegA, "(POP / [SP++])" )
+            | bits == lobitstring 6 0x19 = ( DcpuRegA, "[SP] / PEEK" )
+            | bits == lobitstring 6 0x1a = ( DcpuRegA, "[SP + next word] / PICK n" )
+            | bits == lobitstring 6 0x1b = ( DcpuRegA, "SP" )
+            | bits == lobitstring 6 0x1c = ( DcpuRegA, "PC" )
+            | bits == lobitstring 6 0x1d = ( DcpuRegA, "EX" )
+            | bits == lobitstring 6 0x1e = ( DcpuRegA, "[next word]" )
+            | bits == lobitstring 6 0x1f = ( DcpuRegA, "next word (literal)" )
+
+            | bits == lobitstring 6 0x20 = ( DcpuRegA, "literal -1" )
+            | bits == lobitstring 6 0x21 = ( DcpuRegA, "literal 0" )
+            | bits == lobitstring 6 0x22 = ( DcpuRegA, "literal 1" )
+            | bits == lobitstring 6 0x23 = ( DcpuRegA, "literal 2" )
+            | bits == lobitstring 6 0x24 = ( DcpuRegA, "literal 3" )
+            | bits == lobitstring 6 0x25 = ( DcpuRegA, "literal 4" )
+            | bits == lobitstring 6 0x26 = ( DcpuRegA, "literal 5" )
+            | bits == lobitstring 6 0x27 = ( DcpuRegA, "literal 6" )
+            | bits == lobitstring 6 0x28 = ( DcpuRegA, "literal 7" )
+            | bits == lobitstring 6 0x29 = ( DcpuRegA, "literal 8" )
+            | bits == lobitstring 6 0x2a = ( DcpuRegA, "literal 9" )
+            | bits == lobitstring 6 0x2b = ( DcpuRegA, "literal 10" )
+            | bits == lobitstring 6 0x2c = ( DcpuRegA, "literal 11" )
+            | bits == lobitstring 6 0x2d = ( DcpuRegA, "literal 12" )
+            | bits == lobitstring 6 0x2e = ( DcpuRegA, "literal 13" )
+            | bits == lobitstring 6 0x2f = ( DcpuRegA, "literal 14" )
+            | bits == lobitstring 6 0x30 = ( DcpuRegA, "literal 15" )
+            | bits == lobitstring 6 0x31 = ( DcpuRegA, "literal 16" )
+            | bits == lobitstring 6 0x32 = ( DcpuRegA, "literal 17" )
+            | bits == lobitstring 6 0x33 = ( DcpuRegA, "literal 18" )
+            | bits == lobitstring 6 0x34 = ( DcpuRegA, "literal 19" )
+            | bits == lobitstring 6 0x35 = ( DcpuRegA, "literal 20" )
+            | bits == lobitstring 6 0x36 = ( DcpuRegA, "literal 21" )
+            | bits == lobitstring 6 0x37 = ( DcpuRegA, "literal 22" )
+            | bits == lobitstring 6 0x38 = ( DcpuRegA, "literal 23" )
+            | bits == lobitstring 6 0x39 = ( DcpuRegA, "literal 24" )
+            | bits == lobitstring 6 0x3a = ( DcpuRegA, "literal 25" )
+            | bits == lobitstring 6 0x3b = ( DcpuRegA, "literal 26" )
+            | bits == lobitstring 6 0x3c = ( DcpuRegA, "literal 27" )
+            | bits == lobitstring 6 0x3d = ( DcpuRegA, "literal 28" )
+            | bits == lobitstring 6 0x3e = ( DcpuRegA, "literal 29" )
+            | bits == lobitstring 6 0x3f = ( DcpuRegA, "literal 30" )
+
+
+
+dcpuparser :: Parser (Code.Instruction String (DcpuFieldType, String))
+dcpuparser = specsToParser convert specasts
+    where
+        specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
+
+
 
 
 
