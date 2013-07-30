@@ -41,6 +41,9 @@ specFieldToCodeFieldParser convert (S.Field intype specstring) = do
             S.Literal -> C.Literal
             S.Variable -> C.Variable
 
+-- convert one spec to a parser for that spec
+-- NB: we're hardcoding the first field of CodeAst.InstructionSpec (the
+-- description) to be a string here.  Not sure how I'd do it otherwise yet.
 specToParser :: (String -> [Bit] -> a) -> S.InstructionSpec -> Parser (C.Instruction String a)
 specToParser convert (S.InstructionSpec name fields) = do
     parsedfields <- sequence $ map (specFieldToCodeFieldParser convert) fields
