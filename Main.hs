@@ -3,13 +3,11 @@
 -- Main.hs
 --
 
-import DcpuSpecTables (instrspecs)
+import DcpuSpecTables
 import BitList (bitsFromByteList)
-import SpecParser
-import Text.Parsec.Prim
-import SpecAstToCodeParser
 import CodeAst
 import Data.Either (rights)
+import Text.Parsec.Prim
 import Text.Parsec.Error (ParseError)
 
 input = bitsFromByteList [
@@ -24,13 +22,11 @@ input = bitsFromByteList [
     0x02, 0x40
     ]
 
-specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
+--theparser :: Parser [DcpuInstruction]
+--theparser = many $ specsToParser specasts
 
-theparser :: Parser [DcpuInstruction]
-theparser = many $ specsToParser specasts
-
-a :: Either ParseError [DcpuInstruction]
-a = parse theparser "file N/A" input
+a :: Either ParseError [Instruction String (DcpuFieldType,String)]
+a = parse dcpuParser "file N/A" input
 
 parsed = head $ rights [a]
 
