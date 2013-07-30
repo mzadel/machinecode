@@ -35,7 +35,8 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Field a)
 
 specFieldToCodeFieldParser convert (S.Field intype specstring) = do
-    bitsparsed <- bitSpecToParser specstring
+    bitsparsed <- bitSpecToParser specstring -- this isn't doing the parsing, it's just returning the parser
+    -- so the conversion function needs to be invoked when the parser *runs*
     fieldtype <- convert specstring bitsparsed
     return (C.Field outtype fieldtype bitsparsed)
     where
