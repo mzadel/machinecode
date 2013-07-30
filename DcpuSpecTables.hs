@@ -129,4 +129,10 @@ regaspecs = zip (map (lobitstring 6) vals) labels
 --mapvarfield "Aaaaaa" "010100" = ( DcpuRegA, "B" )
 
 
+
+-- here:
+-- return an ultimate parser
+-- dcpuparser = specsToParser convert specs
+-- then that's what you export
+
 -- vim:sw=4:ts=4:et:ai:
