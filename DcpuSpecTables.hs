@@ -3,8 +3,10 @@
 -- DcpuSpecTables.hs
 --
 
-module DcpuSpecTables where
+module DcpuSpecTables (dcpuParser) where
 
+-- this is packing quite a bit in here, and I want to keep it minimal so it's
+-- simple for instruction set writers
 import BitList (bitsFromByte)
 import Data.Word (Word8)
 import Data.Bit  (Bit)
@@ -31,22 +33,6 @@ instrspecs = [
         ( "Aaaaaa1001000000", "HWI a" )
     ]
 
-
--- this next thing should include: string to be mapped from, then field type,
--- then annotation
--- ( "Aaaaaa", "010101", DcpuRegA, "this means yadda" )
--- then maybe I can can curry these?  like partially apply "Aaaaaa"
--- and then apply the "010101", and then get the values back
---
--- Maybe I should make the field description part of the field type
---
--- Also, I need to include the ability to add functions for interpreting a
--- given value and pretty-printing the value
-
--- list reg a interpretations in hex.  do it this way so it matches the spec
--- document, even though we only use the 6 lower-order bits.  regaspecshex is
--- converted to regaspecs, which specifies the register a contents as a Char
--- bit spec string
 
 -- compute a bit string from the input byte from its low order bits, listed
 -- most significant bit first
@@ -125,26 +111,9 @@ convert specstring parsedbits = case specstring of
             | bits == lobitstring 6 0x3f = ( DcpuRegA, "literal 30" )
 
 
-
-dcpuparser :: Parser (Code.Instruction String (DcpuFieldType, String))
-dcpuparser = specsToParser convert specasts
+dcpuParser :: Parser (Code.Instruction String (DcpuFieldType, String))
+dcpuParser = specsToParser convert specasts
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
-
-
-
-
-
--- idea for mapping between the variable fields: use pattern matching in a
--- function like this
---mapvarfield "Aaaaaa" "010010" = ( DcpuRegA, "A" )
---mapvarfield "Aaaaaa" "010100" = ( DcpuRegA, "B" )
-
-
-
--- here:
--- return an ultimate parser
--- dcpuparser = specsToParser convert specs
--- then that's what you export
 
 -- vim:sw=4:ts=4:et:ai:
