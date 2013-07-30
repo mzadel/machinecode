@@ -44,7 +44,7 @@ lobitstring length inbyte = drop (8-length) $ bitsFromByte inbyte
 -- then pass the table into a module function to get the final parser out
 convert :: String -> [Bit] -> (DcpuFieldType,String)
 convert specstring parsedbits = case specstring of
-    "literal" -> (DcpuLiteralBits,"literal")
+    "literal" -> (DcpuLiteralBits,"literal")    -- actually can I just encapsulate this in a different type? w/o having to have a type variable
     "Aaaaaa" -> convertAaaaaa parsedbits
     where
         convertAaaaaa bits
