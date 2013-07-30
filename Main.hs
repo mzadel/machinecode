@@ -22,9 +22,6 @@ input = bitsFromByteList [
     0x02, 0x40
     ]
 
---theparser :: Parser [DcpuInstruction]
---theparser = many $ specsToParser specasts
-
 a :: Either ParseError [Instruction String (DcpuFieldType,String)]
 a = parse dcpuParser "file N/A" input
 
