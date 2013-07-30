@@ -110,11 +110,11 @@ convert specstring parsedbits = case specstring of
             | bits == lobitstring 6 0x3e = ( DcpuRegA, "literal 29" )
             | bits == lobitstring 6 0x3f = ( DcpuRegA, "literal 30" )
 
-
+-- this is a little complicated for this file
 dcpuParser :: Parser [Code.Instruction String (DcpuFieldType, String)]
-dcpuParser = many $ specparser
+dcpuParser = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
-        specparser = specsToParser convert specasts
+        instructionparser = specsToParser convert specasts
 
 -- vim:sw=4:ts=4:et:ai:
