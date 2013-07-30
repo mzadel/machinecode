@@ -50,6 +50,6 @@ specToParser convert (S.InstructionSpec name fields) = do
     return (C.Instruction name parsedfields)
 
 specsToParser :: (String -> [Bit] -> a) -> [S.InstructionSpec] -> Parser (C.Instruction String a)
-specsToParser convert specs = choice $ map (try . (specToParser convert)) specs
+specsToParser convert specs = choice $ map (try . specToParser convert) specs
 
 -- vim:sw=4:ts=4:et:ai:
