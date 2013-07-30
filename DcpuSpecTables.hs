@@ -112,9 +112,9 @@ convert specstring parsedbits = case specstring of
 
 
 dcpuParser :: Parser [Code.Instruction String (DcpuFieldType, String)]
-dcpuParser = many $ specsToParser specasts
+dcpuParser = many $ specparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
-        specparsers = specsToParser convert specasts
+        specparser = specsToParser convert specasts
 
 -- vim:sw=4:ts=4:et:ai:
