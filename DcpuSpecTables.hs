@@ -39,6 +39,9 @@ instrspecs = [
 lobitstring :: Int -> Word8 -> [Bit]
 lobitstring length inbyte = drop (8-length) $ bitsFromByte inbyte
 
+-- move the function into a module, and just make this a table:
+-- ( "Aaaaaa", lobitstring 6 0x00, ( DcpuRegA, "A" ) ) etc
+-- then pass the table into a module function to get the final parser out
 convert :: String -> [Bit] -> (DcpuFieldType,String)
 convert specstring parsedbits = case specstring of
     "literal" -> (DcpuLiteralBits,"literal")
