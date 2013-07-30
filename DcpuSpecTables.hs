@@ -3,7 +3,7 @@
 -- DcpuSpecTables.hs
 --
 
-module DcpuSpecTables (dcpuParser) where
+module DcpuSpecTables (DcpuFieldType, dcpuParser) where
 
 -- this is packing quite a bit in here, and I want to keep it minimal so it's
 -- simple for instruction set writers
@@ -111,9 +111,10 @@ convert specstring parsedbits = case specstring of
             | bits == lobitstring 6 0x3f = ( DcpuRegA, "literal 30" )
 
 
-dcpuParser :: Parser (Code.Instruction String (DcpuFieldType, String))
-dcpuParser = specsToParser convert specasts
+dcpuParser :: Parser [Code.Instruction String (DcpuFieldType, String)]
+dcpuParser = many $ specsToParser specasts
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
+        specparsers = specsToParser convert specasts
 
 -- vim:sw=4:ts=4:et:ai:
