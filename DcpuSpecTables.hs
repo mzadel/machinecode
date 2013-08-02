@@ -3,20 +3,10 @@
 -- DcpuSpecTables.hs
 --
 
-module DcpuSpecTables (DcpuFieldType, dcpuParser) where
+module DcpuSpecTables (DcpuFieldType) where
 
--- this is packing quite a bit in here, and I want to keep it minimal so it's
--- simple for instruction set writers
 import BitList (bitsFromByte)
-import Data.Word (Word8)
 import Data.Bit  (Bit)
-import qualified CodeAst as Code
-import qualified SpecAst as Spec
-import SpecParser
-import SpecAstToCodeParser
-import Data.Either (rights)
-import Text.Parsec.Prim
-import Text.Parsec.Error (ParseError)
 
 data DcpuFieldType = DcpuLiteralBits | DcpuRegA | DcpuRegB | DcpuOptionalWord
     deriving (Show)
@@ -34,91 +24,85 @@ instrspecs = [
     ]
 
 
--- compute a bit string from the input byte from its low order bits, listed
--- most significant bit first
-lobitstring :: Int -> Word8 -> [Bit]
-lobitstring length inbyte = drop (8-length) $ bitsFromByte inbyte
+fieldtable :: [( String, [Bit], (DcpuFieldType, String) )]
+fieldtable = [
 
--- move the function into a module, and just make this a table:
--- ( "Aaaaaa", lobitstring 6 0x00, ( DcpuRegA, "A" ) ) etc
--- then pass the table into a module function to get the final parser out
-convert :: String -> [Bit] -> (DcpuFieldType,String)
-convert specstring parsedbits = case specstring of
-    "literal" -> (DcpuLiteralBits,"literal")    -- actually can I just encapsulate this in a different type? w/o having to have a type variable
-    "Aaaaaa" -> convertAaaaaa parsedbits
-    where
-        convertAaaaaa bits
-            | bits == lobitstring 6 0x00 = ( DcpuRegA, "A" )
-            | bits == lobitstring 6 0x01 = ( DcpuRegA, "B" )
-            | bits == lobitstring 6 0x02 = ( DcpuRegA, "C" )
-            | bits == lobitstring 6 0x03 = ( DcpuRegA, "X" )
-            | bits == lobitstring 6 0x04 = ( DcpuRegA, "Y" )
-            | bits == lobitstring 6 0x05 = ( DcpuRegA, "Z" )
-            | bits == lobitstring 6 0x06 = ( DcpuRegA, "I" )
-            | bits == lobitstring 6 0x07 = ( DcpuRegA, "J" )
-            | bits == lobitstring 6 0x08 = ( DcpuRegA, "[A]" )
-            | bits == lobitstring 6 0x09 = ( DcpuRegA, "[B]" )
-            | bits == lobitstring 6 0x0a = ( DcpuRegA, "[C]" )
-            | bits == lobitstring 6 0x0b = ( DcpuRegA, "[X]" )
-            | bits == lobitstring 6 0x0c = ( DcpuRegA, "[Y]" )
-            | bits == lobitstring 6 0x0d = ( DcpuRegA, "[Z]" )
-            | bits == lobitstring 6 0x0e = ( DcpuRegA, "[I]" )
-            | bits == lobitstring 6 0x0f = ( DcpuRegA, "[J]" )
-            | bits == lobitstring 6 0x10 = ( DcpuRegA, "[A + next word]" )
-            | bits == lobitstring 6 0x11 = ( DcpuRegA, "[B + next word]" )
-            | bits == lobitstring 6 0x12 = ( DcpuRegA, "[C + next word]" )
-            | bits == lobitstring 6 0x13 = ( DcpuRegA, "[X + next word]" )
-            | bits == lobitstring 6 0x14 = ( DcpuRegA, "[Y + next word]" )
-            | bits == lobitstring 6 0x15 = ( DcpuRegA, "[Z + next word]" )
-            | bits == lobitstring 6 0x16 = ( DcpuRegA, "[I + next word]" )
-            | bits == lobitstring 6 0x17 = ( DcpuRegA, "[J + next word]" )
-            | bits == lobitstring 6 0x18 = ( DcpuRegA, "(POP / [SP++])" )
-            | bits == lobitstring 6 0x19 = ( DcpuRegA, "[SP] / PEEK" )
-            | bits == lobitstring 6 0x1a = ( DcpuRegA, "[SP + next word] / PICK n" )
-            | bits == lobitstring 6 0x1b = ( DcpuRegA, "SP" )
-            | bits == lobitstring 6 0x1c = ( DcpuRegA, "PC" )
-            | bits == lobitstring 6 0x1d = ( DcpuRegA, "EX" )
-            | bits == lobitstring 6 0x1e = ( DcpuRegA, "[next word]" )
-            | bits == lobitstring 6 0x1f = ( DcpuRegA, "next word (literal)" )
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x00, ( DcpuRegA, "A" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x01, ( DcpuRegA, "B" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x02, ( DcpuRegA, "C" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x03, ( DcpuRegA, "X" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x04, ( DcpuRegA, "Y" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x05, ( DcpuRegA, "Z" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x06, ( DcpuRegA, "I" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x07, ( DcpuRegA, "J" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x08, ( DcpuRegA, "[A]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x09, ( DcpuRegA, "[B]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0a, ( DcpuRegA, "[C]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0b, ( DcpuRegA, "[X]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0c, ( DcpuRegA, "[Y]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0d, ( DcpuRegA, "[Z]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0e, ( DcpuRegA, "[I]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x0f, ( DcpuRegA, "[J]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x10, ( DcpuRegA, "[A + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x11, ( DcpuRegA, "[B + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x12, ( DcpuRegA, "[C + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x13, ( DcpuRegA, "[X + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x14, ( DcpuRegA, "[Y + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x15, ( DcpuRegA, "[Z + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x16, ( DcpuRegA, "[I + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x17, ( DcpuRegA, "[J + next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x18, ( DcpuRegA, "(POP / [SP++])" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x19, ( DcpuRegA, "[SP] / PEEK" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1a, ( DcpuRegA, "[SP + next word] / PICK n" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1b, ( DcpuRegA, "SP" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1c, ( DcpuRegA, "PC" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1d, ( DcpuRegA, "EX" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1e, ( DcpuRegA, "[next word]" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x1f, ( DcpuRegA, "next word (literal)" ) ),
 
-            | bits == lobitstring 6 0x20 = ( DcpuRegA, "literal -1" )
-            | bits == lobitstring 6 0x21 = ( DcpuRegA, "literal 0" )
-            | bits == lobitstring 6 0x22 = ( DcpuRegA, "literal 1" )
-            | bits == lobitstring 6 0x23 = ( DcpuRegA, "literal 2" )
-            | bits == lobitstring 6 0x24 = ( DcpuRegA, "literal 3" )
-            | bits == lobitstring 6 0x25 = ( DcpuRegA, "literal 4" )
-            | bits == lobitstring 6 0x26 = ( DcpuRegA, "literal 5" )
-            | bits == lobitstring 6 0x27 = ( DcpuRegA, "literal 6" )
-            | bits == lobitstring 6 0x28 = ( DcpuRegA, "literal 7" )
-            | bits == lobitstring 6 0x29 = ( DcpuRegA, "literal 8" )
-            | bits == lobitstring 6 0x2a = ( DcpuRegA, "literal 9" )
-            | bits == lobitstring 6 0x2b = ( DcpuRegA, "literal 10" )
-            | bits == lobitstring 6 0x2c = ( DcpuRegA, "literal 11" )
-            | bits == lobitstring 6 0x2d = ( DcpuRegA, "literal 12" )
-            | bits == lobitstring 6 0x2e = ( DcpuRegA, "literal 13" )
-            | bits == lobitstring 6 0x2f = ( DcpuRegA, "literal 14" )
-            | bits == lobitstring 6 0x30 = ( DcpuRegA, "literal 15" )
-            | bits == lobitstring 6 0x31 = ( DcpuRegA, "literal 16" )
-            | bits == lobitstring 6 0x32 = ( DcpuRegA, "literal 17" )
-            | bits == lobitstring 6 0x33 = ( DcpuRegA, "literal 18" )
-            | bits == lobitstring 6 0x34 = ( DcpuRegA, "literal 19" )
-            | bits == lobitstring 6 0x35 = ( DcpuRegA, "literal 20" )
-            | bits == lobitstring 6 0x36 = ( DcpuRegA, "literal 21" )
-            | bits == lobitstring 6 0x37 = ( DcpuRegA, "literal 22" )
-            | bits == lobitstring 6 0x38 = ( DcpuRegA, "literal 23" )
-            | bits == lobitstring 6 0x39 = ( DcpuRegA, "literal 24" )
-            | bits == lobitstring 6 0x3a = ( DcpuRegA, "literal 25" )
-            | bits == lobitstring 6 0x3b = ( DcpuRegA, "literal 26" )
-            | bits == lobitstring 6 0x3c = ( DcpuRegA, "literal 27" )
-            | bits == lobitstring 6 0x3d = ( DcpuRegA, "literal 28" )
-            | bits == lobitstring 6 0x3e = ( DcpuRegA, "literal 29" )
-            | bits == lobitstring 6 0x3f = ( DcpuRegA, "literal 30" )
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x20, ( DcpuRegA, "literal -1" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x21, ( DcpuRegA, "literal 0" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x22, ( DcpuRegA, "literal 1" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x23, ( DcpuRegA, "literal 2" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x24, ( DcpuRegA, "literal 3" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x25, ( DcpuRegA, "literal 4" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x26, ( DcpuRegA, "literal 5" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x27, ( DcpuRegA, "literal 6" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x28, ( DcpuRegA, "literal 7" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x29, ( DcpuRegA, "literal 8" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2a, ( DcpuRegA, "literal 9" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2b, ( DcpuRegA, "literal 10" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2c, ( DcpuRegA, "literal 11" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2d, ( DcpuRegA, "literal 12" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2e, ( DcpuRegA, "literal 13" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x2f, ( DcpuRegA, "literal 14" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x30, ( DcpuRegA, "literal 15" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x31, ( DcpuRegA, "literal 16" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x32, ( DcpuRegA, "literal 17" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x33, ( DcpuRegA, "literal 18" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x34, ( DcpuRegA, "literal 19" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x35, ( DcpuRegA, "literal 20" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x36, ( DcpuRegA, "literal 21" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x37, ( DcpuRegA, "literal 22" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x38, ( DcpuRegA, "literal 23" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x39, ( DcpuRegA, "literal 24" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3a, ( DcpuRegA, "literal 25" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3b, ( DcpuRegA, "literal 26" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3c, ( DcpuRegA, "literal 27" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3d, ( DcpuRegA, "literal 28" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3e, ( DcpuRegA, "literal 29" ) ),
+        ( "Aaaaaa", drop 2 $ bitsFromByte  0x3f, ( DcpuRegA, "literal 30" ) )
 
+        ]
+
+
+{-
 -- this is a little complicated for this file
 dcpuParser :: Parser [Code.Instruction String (DcpuFieldType, String)]
 dcpuParser = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
         instructionparser = specsToParser convert specasts
+-}
 
 -- vim:sw=4:ts=4:et:ai:
