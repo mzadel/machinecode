@@ -5,10 +5,13 @@
 
 import FieldInterpreter -- move this code here afterward
 import SpecAstToCodeParser
+import SpecParser
 import qualified SpecAst as S
 import qualified CodeAst as C
+import Data.Either (rights)
+import Text.Parsec.Prim
 
-codeparser :: Parser [Code.Instruction String a]
+codeparser :: Parser [C.Instruction String a]
 codeparser = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
