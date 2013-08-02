@@ -24,8 +24,8 @@ instrspecs = [
     ]
 
 
-fieldtable :: [( String, [Bit], (DcpuFieldType, String) )]
-fieldtable = [
+fieldlabeltable :: [( String, [Bit], (DcpuFieldType, String) )]
+fieldlabeltable = [
 
         ( "Aaaaaa", drop 2 $ bitsFromByte  0x00, ( DcpuRegA, "A" ) ),
         ( "Aaaaaa", drop 2 $ bitsFromByte  0x01, ( DcpuRegA, "B" ) ),
