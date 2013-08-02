@@ -6,6 +6,7 @@
 import DcpuSpecTables
 import BitList (bitsFromByteList)
 import CodeAst
+import CodeParser
 import Data.Either (rights)
 import Text.Parsec.Prim
 import Text.Parsec.Error (ParseError)
@@ -21,6 +22,8 @@ input = bitsFromByteList [
     0x02, 0x20,
     0x02, 0x40
     ]
+
+dcpuParser = codeparser instrspecs fieldtable
 
 a :: Either ParseError [Instruction String (DcpuFieldType,String)]
 a = parse dcpuParser "file N/A" input

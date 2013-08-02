@@ -3,7 +3,7 @@
 -- DcpuSpecTables.hs
 --
 
-module DcpuSpecTables (DcpuFieldType) where
+module DcpuSpecTables where
 
 import BitList (bitsFromByte)
 import Data.Bit  (Bit)
@@ -94,15 +94,5 @@ fieldtable = [
         ( "Aaaaaa", drop 2 $ bitsFromByte  0x3f, ( DcpuRegA, "literal 30" ) )
 
         ]
-
-
-{-
--- this is a little complicated for this file
-dcpuParser :: Parser [Code.Instruction String (DcpuFieldType, String)]
-dcpuParser = many $ instructionparser
-    where
-        specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
-        instructionparser = specsToParser convert specasts
--}
 
 -- vim:sw=4:ts=4:et:ai:
