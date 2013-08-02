@@ -25,7 +25,4 @@ codeparser instrspecs labeler = many $ instructionparser
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
         instructionparser = specsToParser labeler specasts
 
-
-
-
 -- vim:sw=4:ts=4:et:ai:
