@@ -5,6 +5,8 @@
 
 module SpecAst where
 
+-- maybe change these to Field a and InstructionSpec a so you don't commit to a
+-- String type
 data Field = FieldLiteral String | FieldVariable String
     deriving (Show)
 data InstructionSpec = InstructionSpec String [Field]
