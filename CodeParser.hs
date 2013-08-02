@@ -3,7 +3,7 @@
 -- CodeParser.hs
 --
 
-import FieldInterpreter
+import FieldInterpreter -- move this code here afterward
 import SpecAstToCodeParser
 import qualified SpecAst as S
 import qualified CodeAst as C
