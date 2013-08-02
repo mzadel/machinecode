@@ -5,9 +5,7 @@
 
 module SpecAst where
 
-data FieldType = Literal | Variable
-    deriving (Show)
-data Field = Field FieldType String
+data Field = FieldLiteral String | FieldVariable String
     deriving (Show)
 data InstructionSpec = InstructionSpec String [Field]
     deriving (Show)
@@ -21,7 +19,9 @@ class WithString a where
     string :: a -> String
 
 instance WithString Field where
-    len (Field _ str) = length str
-    string (Field _ str) = str
+    len (FieldLiteral str) = length str
+    len (FieldVariable str) = length str
+    string (FieldLiteral str) = str
+    string (FieldVariable str) = str
 
 -- vim:sw=4:ts=4:et:ai:
