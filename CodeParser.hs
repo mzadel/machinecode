@@ -19,10 +19,11 @@ fieldlabeler table specstring parsedbits = head matchinglabels
         (strings,bits,labels) = unzip3 table
         matchinglabels = [ l | s <- strings, b <- bits, l <- labels, s == specstring, b == parsedbits ]
 
-codeparser :: [(String,String)] -> (String->[Bit]->a) -> Parser [C.Instruction String a]
-codeparser instrspecs labeler = many $ instructionparser
+codeparser :: [(String,String)] -> [( String, [Bit], a )] -> Parser [C.Instruction String a]
+codeparser instrspecs fieldlabeltable = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
         instructionparser = specsToParser labeler specasts
+        labeler = fieldlabeler fieldlabeltable
 
 -- vim:sw=4:ts=4:et:ai:
