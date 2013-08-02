@@ -36,11 +36,11 @@ specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Fie
 
 specFieldToCodeFieldParser convert (S.Field S.Literal specstring) = do
     bitsparsed <- bitSpecToParser specstring
-    return (C.Field C.Literal (convert "literal" bitsparsed) bitsparsed)
+    return (C.FieldLiteral bitsparsed)
 
 specFieldToCodeFieldParser convert (S.Field S.Variable specstring) = do
     bitsparsed <- bitSpecToParser specstring
-    return (C.Field C.Variable (convert specstring bitsparsed) bitsparsed)
+    return (C.FieldVariable (convert specstring bitsparsed) bitsparsed)
 
 
 -- convert one spec to a parser for that spec
