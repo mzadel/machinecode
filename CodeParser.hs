@@ -3,6 +3,8 @@
 -- CodeParser.hs
 --
 
+module CodeParser (codeparser) where
+
 import SpecAstToCodeParser
 import SpecParser
 import qualified SpecAst as S
