@@ -17,6 +17,7 @@ data FieldType = RegA | RegB | OptionalWord
 -- (Using this so the table here matches the dcpu spec document.)
 toOpcodeBitString = concat . map show . drop 3 . bitsFromByte
 
+instrspecs :: [ ( String, String ) ]
 instrspecs = [
         ( "Aaaaaa" ++ toOpcodeBitString 0x01 ++ "00000", "JSR a" ),
         ( "Aaaaaa" ++ toOpcodeBitString 0x08 ++ "00000", "INT a" ),
