@@ -5,6 +5,9 @@
 
 module SpecAst where
 
+-- the type variable in InstructionSpec below is the label for the instruction.
+-- that label gets propagaged to the label in CodeAst.Instruction during
+-- processing, so that label will have the same type.
 data Field = FieldLiteral String | FieldVariable String
     deriving (Show)
 data InstructionSpec a = InstructionSpec a [Field]
