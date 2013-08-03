@@ -6,7 +6,7 @@
 module DcpuSpecTables where
 
 import BitList (bitsFromByte)
-import Data.Bit  (Bit)
+import Data.Bit (Bit)
 
 data FieldType = RegA | RegB | OptionalWord
     deriving (Show)
