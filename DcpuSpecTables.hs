@@ -11,6 +11,8 @@ import Data.Bit (Bit)
 data FieldType = RegA | RegB | OptionalWord
     deriving (Show)
 
+type UserState = ( Bool )
+
 -- Compute a string of ones and zeroes from the byte value.
 -- (Using this so the table here matches the dcpu spec document.)
 toString = concat . map show . drop 3 . bitsFromByte
@@ -66,6 +68,9 @@ toRegBBits = drop 3 . bitsFromByte
 
 
 -- here I'll need to have: should I parse this?  what's the state transformation when I do?
+-- columns should be:
+-- ( String, [Bit], shouldparse, (FieldType, String), statetransform ), ie
+-- ( String, [Bit], UserState->Bool, (FieldType, String), UserState->UserState )
 fieldlabeltable :: [( String, [Bit], (FieldType, String), String )]
 fieldlabeltable = [
 
