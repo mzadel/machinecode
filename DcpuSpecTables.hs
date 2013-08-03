@@ -64,6 +64,8 @@ instrspecs = [
 toRegABits = drop 2 . bitsFromByte
 toRegBBits = drop 3 . bitsFromByte
 
+
+-- here I'll need to have: should I parse this?  what's the state transformation when I do?
 fieldlabeltable :: [( String, [Bit], (FieldType, String), String )]
 fieldlabeltable = [
 

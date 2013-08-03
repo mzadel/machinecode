@@ -18,6 +18,7 @@ import Text.Parsec.Prim
 import Text.Parsec.Combinator (choice)
 import StreamInstance ()
 
+-- make state type a variable here so that I can defer binding it to the spec table
 type Parser = Parsec [Bit] ()
 
 -- takes a character string representing bits expected (one char per bit, from
