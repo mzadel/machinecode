@@ -18,6 +18,7 @@ dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable
 a :: Either ParseError [Instruction String (Dcpu.FieldType,String)]
 a = parse dcpuParser "file N/A" input
 
+parsed :: [Instruction String (Dcpu.FieldType,String)]
 parsed = head $ rights [a]
 
 main = do
