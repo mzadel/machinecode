@@ -173,7 +173,7 @@ fieldlabeltable = [
         ( "Bbbbb",  toRegBBits 0x1e, ( RegB, "[next word]" ),                  parsenextword ),
         ( "Bbbbb",  toRegBBits 0x1f, ( RegB, "next word (literal)" ),          parsenextword ),
 
-        ( "Dddddddddddddddd", [], ( OptionalWord, "value "), id )
+        ( "Dddddddddddddddd", [], ( OptionalWord, "value"), id )
 
     ]
     where
