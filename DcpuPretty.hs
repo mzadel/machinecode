@@ -3,8 +3,9 @@
 -- DcpuPretty.hs
 --
 
-module DcpuPretty (instructionString) where
+module DcpuPretty (ppinstr) where
 
+import qualified DcpuSpecTables as Dcpu
 import CodeAst
 import Data.Bit
 
@@ -23,9 +24,40 @@ instructionbits (Instruction _ fields) = concat $ map fieldbits fields
 
 -- Dcpu instructions are labeled by strings, so we can set the label type to
 -- that here
-instructionString :: Instruction String b -> String
-instructionString instr = (bitstostring $ instructionbits instr) ++ " " ++ (label instr) ++ "\n"
+instructionString :: Show a => Instruction a b -> String
+instructionString instr = (bitstostring $ instructionbits instr) ++ " " ++ (show $ label instr) ++ "\n"
     where
-        label (Instruction labelstring _) = labelstring
+        label (Instruction thelabel _) = thelabel
+
+fieldstring :: Show a => Field a -> String
+fieldstring field = (bitstostring $ fieldbits field) ++ " " ++ (show $ label field) ++ "\n"
+    where
+        label (FieldVariable thelabel _) = thelabel
+
+fieldbitoffsets :: [Field a] -> [Int]
+fieldbitoffsets fields = init $ scanl (+) 0 fieldlengths
+    where
+        fieldlength (FieldLiteral bs) = length bs
+        fieldlength (FieldVariable _ bs) = length bs
+        fieldlength (FieldNothing) = 0
+        fieldlengths = map fieldlength fields
+
+shouldshowfield :: Field a -> Bool
+shouldshowfield (FieldLiteral _) = False
+shouldshowfield (FieldVariable _ _) = True
+shouldshowfield (FieldNothing) = False
+
+ppfieldlist :: Show a => [Field a] -> String
+ppfieldlist fieldlist = concat $ map indent tostrings
+    where
+        zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
+        filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
+        tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
+        indent (i,s) = (replicate i ' ') ++ s
+
+ppinstr :: Show a => Instruction String a -> String
+ppinstr instr = (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
+    where
+        fields (Instruction _ thefields) = thefields
 
 -- vim:sw=4:ts=4:et:ai:

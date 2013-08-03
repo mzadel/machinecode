@@ -30,7 +30,7 @@ parsed = head $ rights [a]
 
 main = do
     print $ length parsed
-    mapM_ (putStr . instructionString) parsed
+    mapM_ (putStr . ppinstr) parsed
 
 
 -- vim:sw=4:ts=4:et:ai:
