@@ -5,7 +5,7 @@
 
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
 
-module StreamInstance where
+module StreamInstance () where
 
 import Text.Parsec.Prim
 

@@ -10,7 +10,7 @@ import Text.Parsec.Prim
 import Text.Parsec.Char
 import Text.Parsec.Combinator
 import Text.Parsec.Error
-import StreamInstance
+import StreamInstance ()
 
 type Parser = Parsec String ()
 
