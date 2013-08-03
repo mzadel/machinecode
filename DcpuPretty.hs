@@ -97,7 +97,7 @@ fieldbitoffsets fields = init $ scanl (+) 0 fieldlengths
         fieldlength (FieldNothing) = 0
         fieldlengths = map fieldlength fields
 
-shouldshowfield :: Field (Dcpu.FieldType, a) -> Bool
+shouldshowfield :: Field a -> Bool
 shouldshowfield (FieldLiteral _) = False
 shouldshowfield (FieldVariable _ _) = True
 shouldshowfield (FieldNothing) = False
