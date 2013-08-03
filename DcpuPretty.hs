@@ -11,6 +11,8 @@ import Data.Bit
 
 -- given the code ast for one instruction, return a string that pretty prints it
 
+labelcolumn = 50
+
 bitstostring :: [Bit] -> String
 bitstostring = concat . map show
 
@@ -25,7 +27,7 @@ instructionbits (Instruction _ fields) = concat $ map fieldbits fields
 -- Dcpu instructions are labeled by strings, so we can set the label type to
 -- that here
 instructionString :: Show a => Instruction a b -> String
-instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (60-(length $ instructionbits instr)) ' ') ++ (show $ label instr) ++ "\n"
+instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (labelcolumn-(length $ instructionbits instr)) ' ') ++ (show $ label instr) ++ "\n"
     where
         label (Instruction thelabel _) = thelabel
 
@@ -53,7 +55,7 @@ ppfieldlist fieldlist = concat $ map indent tostrings
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
         filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
         tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
-        indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (60-i-(length bs)) ' ') ++ label ++ "\n"
+        indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
 ppinstr :: Show a => Instruction String a -> String
 ppinstr instr = (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
