@@ -13,6 +13,8 @@ import Data.Word (Word8)
 data FieldType = RegA | RegB | OptionalWord
     deriving (Show)
 
+-- Compute a string of ones and zeroes from the byte value.
+-- (Using this so the table here matches the dcpu spec document.)
 toOpcodeBitString = concat . map show . drop 3 . bitsFromByte
 
 instrspecs = [
