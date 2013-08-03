@@ -47,12 +47,12 @@ specFieldToCodeFieldParser convert (S.FieldVariable specstring) = do
 -- convert one spec to a parser for that spec
 -- NB: we're hardcoding the first field of CodeAst.InstructionSpec (the
 -- description) to be a string here.  Not sure how I'd do it otherwise yet.
-specToParser :: (String -> [Bit] -> b) -> S.InstructionSpec a -> Parser (C.Instruction a b)
-specToParser convert (S.InstructionSpec name fields) = do
+specToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (c -> c)) -> S.InstructionSpec a -> Parser (C.Instruction a b)
+specToParser convert statetransformer (S.InstructionSpec name fields) = do
     parsedfields <- sequence $ map (specFieldToCodeFieldParser convert) fields
     return (C.Instruction name parsedfields)
 
 specsToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (c -> c)) -> [S.InstructionSpec a] -> Parser (C.Instruction a b)
-specsToParser convert statetransformer specs = choice $ map (try . specToParser convert) specs
+specsToParser convert statetransformer specs = choice $ map (try . specToParser convert statetransformer) specs
 
 -- vim:sw=4:ts=4:et:ai:
