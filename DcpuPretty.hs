@@ -12,6 +12,7 @@ import Data.Word (Word16)
 import Data.Bits
 
 -- given the code ast for one instruction, return a string that pretty prints it
+-- todo: split out the generic parts of this from the dcpu-specific parts
 
 labelcolumn = 50
 
