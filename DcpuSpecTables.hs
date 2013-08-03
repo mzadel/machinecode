@@ -190,8 +190,8 @@ fieldlabeltable = [
         -- parse the Dddddddddddddddd field
         parsenextword = \_ -> (True)
 
--- collect these "should parse?" judgements in one separate table since it
--- should be per-field-type I think
+-- answer true if a field with this spec should be parsed given the current
+-- state
 shouldparsefield :: String -> UserState -> Bool
 shouldparsefield "Aaaaaa" _ = True
 shouldparsefield "Bbbbb" _ = True
