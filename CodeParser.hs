@@ -18,8 +18,10 @@ import Data.Bit
 fieldlabeler :: [( String, [Bit], a )] -> String -> [Bit] -> a
 fieldlabeler table specstring parsedbits = head matchinglabels
     where
-        (strings,bits,labels) = unzip3 table
-        matchinglabels = [ l | s <- strings, b <- bits, l <- labels, s == specstring, b == parsedbits ]
+        matchinglabels = map extractlabel matchingtuples
+        extractlabel (s,b,l) = l
+        matchingtuples = filter matches table
+        matches (s,b,l) = s == specstring && b == parsedbits
 
 codeparser :: [(String,String)] -> [( String, [Bit], a )] -> Parser [C.Instruction String a]
 codeparser instrspecs fieldlabeltable = many $ instructionparser
