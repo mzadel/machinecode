@@ -177,4 +177,13 @@ fieldlabeltable = [
 
     ]
 
+-- collect these "should parse?" judgements in one separate table since it
+-- should be per-field-type I think
+shouldparse :: String -> UserState -> Bool
+shouldparse "Aaaaaa" _ = True
+shouldparse "Bbbbb" _ = True
+shouldparse "Dddddddddddddddd" (flag) = flag
+
+
+
 -- vim:sw=4:ts=4:et:ai:
