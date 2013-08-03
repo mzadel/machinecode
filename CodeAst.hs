@@ -7,7 +7,7 @@ module CodeAst where
 
 import Data.Bit
 
-data Field a = FieldLiteral [Bit] | FieldVariable a [Bit] 
+data Field a = FieldLiteral [Bit] | FieldVariable a [Bit] | FieldNothing
     deriving (Show)
 
 data Instruction a b = Instruction a [Field b]
