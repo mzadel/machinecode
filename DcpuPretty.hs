@@ -110,7 +110,6 @@ ppfieldlist fieldlist = concat $ map indent tostrings
         tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
--- maybe also put the hex character above each nibble
 ppinstr :: Show a => Instruction String (Dcpu.FieldType, a) -> String
 ppinstr instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
     where
