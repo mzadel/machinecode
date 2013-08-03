@@ -3,7 +3,7 @@
 -- Main.hs
 --
 
-import DcpuSpecTables
+import qualified DcpuSpecTables as Dcpu
 import BitList (bitsFromByteList)
 import CodeAst
 import CodeParser
@@ -23,9 +23,9 @@ input = bitsFromByteList [
     0x02, 0x40
     ]
 
-dcpuParser = codeparser instrspecs fieldlabeltable
+dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable
 
-a :: Either ParseError [Instruction String (DcpuFieldType,String)]
+a :: Either ParseError [Instruction String (Dcpu.FieldType,String)]
 a = parse dcpuParser "file N/A" input
 
 parsed = head $ rights [a]
