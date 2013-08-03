@@ -33,13 +33,13 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 
 -- signature for the function to convert a spec field to a code field
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
-specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> S.Field -> Parser (C.Field a)
+specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> (String -> [Bit] -> (c -> c)) -> S.Field -> Parser (C.Field a)
 
-specFieldToCodeFieldParser convert (S.FieldLiteral specstring) = do
+specFieldToCodeFieldParser convert statetransformer (S.FieldLiteral specstring) = do
     bitsparsed <- bitSpecToParser specstring
     return (C.FieldLiteral bitsparsed)
 
-specFieldToCodeFieldParser convert (S.FieldVariable specstring) = do
+specFieldToCodeFieldParser convert statetransformer (S.FieldVariable specstring) = do
     bitsparsed <- bitSpecToParser specstring
     return (C.FieldVariable (convert specstring bitsparsed) bitsparsed)
 
@@ -49,7 +49,7 @@ specFieldToCodeFieldParser convert (S.FieldVariable specstring) = do
 -- description) to be a string here.  Not sure how I'd do it otherwise yet.
 specToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (c -> c)) -> S.InstructionSpec a -> Parser (C.Instruction a b)
 specToParser convert statetransformer (S.InstructionSpec name fields) = do
-    parsedfields <- sequence $ map (specFieldToCodeFieldParser convert) fields
+    parsedfields <- sequence $ map (specFieldToCodeFieldParser convert statetransformer) fields
     return (C.Instruction name parsedfields)
 
 specsToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (c -> c)) -> [S.InstructionSpec a] -> Parser (C.Instruction a b)
