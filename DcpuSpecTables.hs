@@ -27,6 +27,7 @@ instrspecs = [
 -- so they match the dcpu instruction specification, so they'll be easier to
 -- compare.
 toRegABits = drop 2 . bitsFromByte
+toRegBBits = drop 3 . bitsFromByte
 
 fieldlabeltable :: [( String, [Bit], (FieldType, String) )]
 fieldlabeltable = [
@@ -95,7 +96,40 @@ fieldlabeltable = [
         ( "Aaaaaa", toRegABits 0x3c, ( RegA, "literal 27" ) ),
         ( "Aaaaaa", toRegABits 0x3d, ( RegA, "literal 28" ) ),
         ( "Aaaaaa", toRegABits 0x3e, ( RegA, "literal 29" ) ),
-        ( "Aaaaaa", toRegABits 0x3f, ( RegA, "literal 30" ) )
+        ( "Aaaaaa", toRegABits 0x3f, ( RegA, "literal 30" ) ),
+
+        ( "Bbbbb", toRegBBits 0x00, ( RegB, "A" ) ),
+        ( "Bbbbb", toRegBBits 0x01, ( RegB, "B" ) ),
+        ( "Bbbbb", toRegBBits 0x02, ( RegB, "C" ) ),
+        ( "Bbbbb", toRegBBits 0x03, ( RegB, "X" ) ),
+        ( "Bbbbb", toRegBBits 0x04, ( RegB, "Y" ) ),
+        ( "Bbbbb", toRegBBits 0x05, ( RegB, "Z" ) ),
+        ( "Bbbbb", toRegBBits 0x06, ( RegB, "I" ) ),
+        ( "Bbbbb", toRegBBits 0x07, ( RegB, "J" ) ),
+        ( "Bbbbb", toRegBBits 0x08, ( RegB, "[A]" ) ),
+        ( "Bbbbb", toRegBBits 0x09, ( RegB, "[B]" ) ),
+        ( "Bbbbb", toRegBBits 0x0a, ( RegB, "[C]" ) ),
+        ( "Bbbbb", toRegBBits 0x0b, ( RegB, "[X]" ) ),
+        ( "Bbbbb", toRegBBits 0x0c, ( RegB, "[Y]" ) ),
+        ( "Bbbbb", toRegBBits 0x0d, ( RegB, "[Z]" ) ),
+        ( "Bbbbb", toRegBBits 0x0e, ( RegB, "[I]" ) ),
+        ( "Bbbbb", toRegBBits 0x0f, ( RegB, "[J]" ) ),
+        ( "Bbbbb", toRegBBits 0x10, ( RegB, "[A + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x11, ( RegB, "[B + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x12, ( RegB, "[C + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x13, ( RegB, "[X + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x14, ( RegB, "[Y + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x15, ( RegB, "[Z + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x16, ( RegB, "[I + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x17, ( RegB, "[J + next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x18, ( RegB, "(PUSH / [--SP])" ) ),
+        ( "Bbbbb", toRegBBits 0x19, ( RegB, "[SP] / PEEK" ) ),
+        ( "Bbbbb", toRegBBits 0x1a, ( RegB, "[SP + next word] / PICK n" ) ),
+        ( "Bbbbb", toRegBBits 0x1b, ( RegB, "SP" ) ),
+        ( "Bbbbb", toRegBBits 0x1c, ( RegB, "PC" ) ),
+        ( "Bbbbb", toRegBBits 0x1d, ( RegB, "EX" ) ),
+        ( "Bbbbb", toRegBBits 0x1e, ( RegB, "[next word]" ) ),
+        ( "Bbbbb", toRegBBits 0x1f, ( RegB, "next word (literal)" ) )
 
     ]
 
