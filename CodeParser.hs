@@ -24,7 +24,14 @@ fieldlabeler :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> a
 fieldlabeler table specstring parsedbits = head matchinglabels
     where
         matchinglabels = map extractlabel matchingtuples
-        extractlabel (s,b,l,x) = l
+        extractlabel (s,b,l,f) = l
+        matchingtuples = matchtableentries table specstring parsedbits
+
+getstatetransform :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> (b -> b)
+getstatetransform table specstring parsedbits = head matchingstatetransforms
+    where
+        matchingstatetransforms = map extractstatetransform matchingtuples
+        extractstatetransform (s,b,l,f) = f
         matchingtuples = matchtableentries table specstring parsedbits
 
 codeparser :: [(String,String)] -> [( String, [Bit], a, b->b )] -> Parser [C.Instruction String a]
@@ -33,5 +40,6 @@ codeparser instrspecs fieldlabeltable = many $ instructionparser
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
         instructionparser = specsToParser labeler specasts
         labeler = fieldlabeler fieldlabeltable
+        statetransformer = getstatetransform fieldlabeltable
 
 -- vim:sw=4:ts=4:et:ai:
