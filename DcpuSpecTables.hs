@@ -20,10 +20,10 @@ defaultstate = (False)
 -- (Using this so the table here matches the dcpu spec document.)
 toString = concat . map show . drop 3 . bitsFromByte
 
-instrspecs :: [ ( String, String ) ]
-instrspecs = [
+instrspecs' :: [ ( String, String ) ]
+instrspecs' = [
 
-        ( "AaaaaaBbbbb" ++ toString 0x01 ++ "Dddddddddddddddd", "SET b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x01, "SET b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x02, "ADD b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x03, "SUB b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x04, "MUL b, a" ),
@@ -62,6 +62,12 @@ instrspecs = [
         ( "Aaaaaa" ++ toString 0x12 ++ " 00000", "HWI a" )
 
     ]
+
+-- append an optional value field to each instruction since any one could
+-- feature an optional data word depending on the registers
+instrspecs = map appendoptionalfield instrspecs'
+    where
+        appendoptionalfield (spec,label) = ( spec ++ "Dddddddddddddddd", label )
 
 -- Compute a bit list from an int value.  I'm expressing these in hex values
 -- so they match the dcpu instruction specification, so they'll be easier to
