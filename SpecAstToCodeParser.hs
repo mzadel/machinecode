@@ -39,10 +39,15 @@ specFieldToCodeFieldParser convert _ _ (S.FieldLiteral specstring) = do
     return (C.FieldLiteral bitsparsed)
 
 specFieldToCodeFieldParser convert statetransformer shouldparse (S.FieldVariable specstring) = do
-    bitsparsed <- bitSpecToParser specstring
-    modifyState (statetransformer specstring bitsparsed)
-    return (C.FieldVariable (convert specstring bitsparsed) bitsparsed)
-
+    st <- getState
+    if ( shouldparse specstring st )
+    then
+        do
+            bitsparsed <- bitSpecToParser specstring
+            modifyState (statetransformer specstring bitsparsed)
+            return (C.FieldVariable (convert specstring bitsparsed) bitsparsed)
+    else
+        return C.FieldNothing
 
 -- convert one spec to a parser for that spec
 -- NB: we're hardcoding the first field of CodeAst.InstructionSpec (the
