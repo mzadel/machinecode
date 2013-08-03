@@ -177,6 +177,8 @@ fieldlabeltable = [
 
     ]
     where
+        -- set the flag in the user state to true to indicate that it should
+        -- parse the Dddddddddddddddd field
         parsenextword = \_ -> (True)
 
 -- collect these "should parse?" judgements in one separate table since it
