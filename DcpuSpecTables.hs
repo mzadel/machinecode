@@ -7,23 +7,27 @@ module DcpuSpecTables where
 
 import BitList (bitsFromByte)
 import Data.Bit  (Bit)
+import Data.Char
+import Data.Word (Word8)
 
 data FieldType = RegA | RegB | OptionalWord
     deriving (Show)
 
+toOpcodeBitString = concat . map show . drop 3 . bitsFromByte
+
 instrspecs = [
-        ( "Aaaaaa0000100000", "JSR a" ),
-        ( "Aaaaaa0100000000", "INT a" ),
-        ( "Aaaaaa0100100000", "IAG a" ),
-        ( "Aaaaaa0101000000", "IAS a" ),
-        ( "Aaaaaa0101100000", "RFI a" ),
-        ( "Aaaaaa0110000000", "IAQ a" ),
-        ( "Aaaaaa1000000000", "HWN a" ),
-        ( "Aaaaaa1000100000", "HWQ a" ),
-        ( "Aaaaaa1001000000", "HWI a" )
+        ( "Aaaaaa" ++ toOpcodeBitString 0x01 ++ "00000", "JSR a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x08 ++ "00000", "INT a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x09 ++ "00000", "IAG a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x0a ++ "00000", "IAS a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x0b ++ "00000", "RFI a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x0c ++ "00000", "IAQ a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x10 ++ "00000", "HWN a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x11 ++ "00000", "HWQ a" ),
+        ( "Aaaaaa" ++ toOpcodeBitString 0x12 ++ "00000", "HWI a" )
     ]
 
--- Compute a bit string from an int value.  I'm expressing these in hex values
+-- Compute a bit list from an int value.  I'm expressing these in hex values
 -- so they match the dcpu instruction specification, so they'll be easier to
 -- compare.
 toRegABits = drop 2 . bitsFromByte
