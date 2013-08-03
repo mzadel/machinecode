@@ -13,7 +13,7 @@ import Text.Parsec.Error (ParseError)
 
 input = bitsFromByteList [ 0x7c, 0x01, 0x00, 0x30 ]
 
-dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable
+dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable Dcpu.shouldparsefield
 
 a :: Either ParseError [Instruction String (Dcpu.FieldType,String)]
 a = parse dcpuParser "file N/A" input
