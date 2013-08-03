@@ -20,7 +20,7 @@ toString = concat . map show . drop 3 . bitsFromByte
 instrspecs :: [ ( String, String ) ]
 instrspecs = [
 
-        ( "AaaaaaBbbbb" ++ toString 0x01, "SET b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x01 ++ "Dddddddddddddddd", "SET b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x02, "ADD b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x03, "SUB b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x04, "MUL b, a" ),
