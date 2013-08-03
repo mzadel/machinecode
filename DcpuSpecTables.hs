@@ -93,6 +93,6 @@ fieldlabeltable = [
         ( "Aaaaaa", drop 2 $ bitsFromByte 0x3e, ( DcpuRegA, "literal 29" ) ),
         ( "Aaaaaa", drop 2 $ bitsFromByte 0x3f, ( DcpuRegA, "literal 30" ) )
 
-        ]
+    ]
 
 -- vim:sw=4:ts=4:et:ai:
