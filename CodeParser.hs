@@ -18,7 +18,7 @@ matchtableentries table specstring parsedbits = filter ismatch table
     where
         ismatch (s,b,_,_) = s == specstring && (b == parsedbits || null parsedbits)
 
--- take a spec string and the bits found in them, and return an interpretation
+-- take a spec string and the bits found in them, and return a label
 -- based on the lookup table
 fieldlabeler :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> a
 fieldlabeler table specstring parsedbits = head matchinglabels
