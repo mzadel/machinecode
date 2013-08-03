@@ -23,6 +23,9 @@ instrspecs = [
         ( "Aaaaaa1001000000", "HWI a" )
     ]
 
+-- Compute a bit string from an int value.  I'm expressing these in hex values
+-- so they match the dcpu instruction specification, so they'll be easier to
+-- compare.
 toRegABits = drop 2 . bitsFromByte
 
 fieldlabeltable :: [( String, [Bit], (FieldType, String) )]
