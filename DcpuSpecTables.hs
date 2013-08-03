@@ -46,15 +46,15 @@ instrspecs = [
         ( "AaaaaaBbbbb" ++ toString 0x1e, "STI b, a" ),
         ( "AaaaaaBbbbb" ++ toString 0x1f, "STD b, a" ),
 
-        ( "Aaaaaa " ++ toString 0x01 ++ " 00000", "JSR a" ),
-        ( "Aaaaaa " ++ toString 0x08 ++ " 00000", "INT a" ),
-        ( "Aaaaaa " ++ toString 0x09 ++ " 00000", "IAG a" ),
-        ( "Aaaaaa " ++ toString 0x0a ++ " 00000", "IAS a" ),
-        ( "Aaaaaa " ++ toString 0x0b ++ " 00000", "RFI a" ),
-        ( "Aaaaaa " ++ toString 0x0c ++ " 00000", "IAQ a" ),
-        ( "Aaaaaa " ++ toString 0x10 ++ " 00000", "HWN a" ),
-        ( "Aaaaaa " ++ toString 0x11 ++ " 00000", "HWQ a" ),
-        ( "Aaaaaa " ++ toString 0x12 ++ " 00000", "HWI a" )
+        ( "Aaaaaa" ++ toString 0x01 ++ " 00000", "JSR a" ),
+        ( "Aaaaaa" ++ toString 0x08 ++ " 00000", "INT a" ),
+        ( "Aaaaaa" ++ toString 0x09 ++ " 00000", "IAG a" ),
+        ( "Aaaaaa" ++ toString 0x0a ++ " 00000", "IAS a" ),
+        ( "Aaaaaa" ++ toString 0x0b ++ " 00000", "RFI a" ),
+        ( "Aaaaaa" ++ toString 0x0c ++ " 00000", "IAQ a" ),
+        ( "Aaaaaa" ++ toString 0x10 ++ " 00000", "HWN a" ),
+        ( "Aaaaaa" ++ toString 0x11 ++ " 00000", "HWQ a" ),
+        ( "Aaaaaa" ++ toString 0x12 ++ " 00000", "HWI a" )
 
     ]
 
