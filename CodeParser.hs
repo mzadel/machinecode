@@ -16,7 +16,7 @@ import Data.Bit
 matchtableentries :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> [( String, [Bit], a, b->b )]
 matchtableentries table specstring parsedbits = filter ismatch table
     where
-        ismatch (s,b,l,x) = s == specstring && (b == parsedbits || null parsedbits)
+        ismatch (s,b,_,_) = s == specstring && (b == parsedbits || null parsedbits)
 
 -- take a spec string and the bits found in them, and return an interpretation
 -- based on the lookup table
@@ -24,14 +24,14 @@ fieldlabeler :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> a
 fieldlabeler table specstring parsedbits = head matchinglabels
     where
         matchinglabels = map extractlabel matchingtuples
-        extractlabel (s,b,l,f) = l
+        extractlabel (_,_,l,_) = l
         matchingtuples = matchtableentries table specstring parsedbits
 
 getstatetransform :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> (b -> b)
 getstatetransform table specstring parsedbits = head matchingstatetransforms
     where
         matchingstatetransforms = map extractstatetransform matchingtuples
-        extractstatetransform (s,b,l,f) = f
+        extractstatetransform (_,_,_,f) = f
         matchingtuples = matchtableentries table specstring parsedbits
 
 codeparser :: [(String,String)] -> [( String, [Bit], a, b->b )] -> Parser [C.Instruction String a]
