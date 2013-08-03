@@ -15,19 +15,19 @@ data FieldType = RegA | RegB | OptionalWord
 
 -- Compute a string of ones and zeroes from the byte value.
 -- (Using this so the table here matches the dcpu spec document.)
-toOpcodeBitString = concat . map show . drop 3 . bitsFromByte
+toString = concat . map show . drop 3 . bitsFromByte
 
 instrspecs :: [ ( String, String ) ]
 instrspecs = [
-        ( "Aaaaaa" ++ toOpcodeBitString 0x01 ++ "00000", "JSR a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x08 ++ "00000", "INT a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x09 ++ "00000", "IAG a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x0a ++ "00000", "IAS a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x0b ++ "00000", "RFI a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x0c ++ "00000", "IAQ a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x10 ++ "00000", "HWN a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x11 ++ "00000", "HWQ a" ),
-        ( "Aaaaaa" ++ toOpcodeBitString 0x12 ++ "00000", "HWI a" )
+        ( "Aaaaaa" ++ toString 0x01 ++ "00000", "JSR a" ),
+        ( "Aaaaaa" ++ toString 0x08 ++ "00000", "INT a" ),
+        ( "Aaaaaa" ++ toString 0x09 ++ "00000", "IAG a" ),
+        ( "Aaaaaa" ++ toString 0x0a ++ "00000", "IAS a" ),
+        ( "Aaaaaa" ++ toString 0x0b ++ "00000", "RFI a" ),
+        ( "Aaaaaa" ++ toString 0x0c ++ "00000", "IAQ a" ),
+        ( "Aaaaaa" ++ toString 0x10 ++ "00000", "HWN a" ),
+        ( "Aaaaaa" ++ toString 0x11 ++ "00000", "HWQ a" ),
+        ( "Aaaaaa" ++ toString 0x12 ++ "00000", "HWI a" )
     ]
 
 -- Compute a bit list from an int value.  I'm expressing these in hex values
