@@ -111,7 +111,7 @@ ppfieldlist fieldlist = concat $ map indent tostrings
 
 -- maybe also put the hex character above each nibble
 ppinstr :: Show a => Instruction String (Dcpu.FieldType, a) -> String
-ppinstr instr = (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
+ppinstr instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
     where
         fields (Instruction _ thefields) = thefields
 
