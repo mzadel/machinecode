@@ -50,8 +50,6 @@ specFieldToCodeFieldParser convert statetransformer shouldparse (S.FieldVariable
         return C.FieldNothing
 
 -- convert one spec to a parser for that spec
--- NB: we're hardcoding the first field of CodeAst.InstructionSpec (the
--- description) to be a string here.  Not sure how I'd do it otherwise yet.
 specToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> S.InstructionSpec a -> Parser u (C.Instruction a b)
 specToParser convert statetransformer shouldparse (S.InstructionSpec name fields) = do
     parsedfields <- sequence $ map (specFieldToCodeFieldParser convert statetransformer shouldparse) fields
