@@ -29,8 +29,8 @@ instructionString instr = (bitstostring $ instructionbits instr) ++ " " ++ (show
     where
         label (Instruction thelabel _) = thelabel
 
-fieldstring :: Show a => Field a -> String
-fieldstring field = (bitstostring $ fieldbits field) ++ " " ++ (show $ label field) ++ "\n"
+fieldstring :: Show a => Field a -> (String,String)
+fieldstring field = ( bitstostring $ fieldbits field, show $ label field )
     where
         label (FieldVariable thelabel _) = thelabel
 
@@ -53,7 +53,7 @@ ppfieldlist fieldlist = concat $ map indent tostrings
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
         filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
         tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
-        indent (i,s) = (replicate i ' ') ++ s
+        indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (60-i-(length bs)) ' ') ++ label ++ "\n"
 
 ppinstr :: Show a => Instruction String a -> String
 ppinstr instr = (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
