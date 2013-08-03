@@ -13,10 +13,10 @@ import Text.Parsec.Error (ParseError)
 
 input = bitsFromByteList [ 0x7c, 0x01, 0x00, 0x30 ]
 
-dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable Dcpu.shouldparsefield
+dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable Dcpu.shouldparsefield Dcpu.defaultstate
 
 a :: Either ParseError [Instruction String (Dcpu.FieldType,String)]
-a = runParser dcpuParser (False) "file N/A" input
+a = runParser dcpuParser Dcpu.defaultstate "file N/A" input
 
 parsed :: [Instruction String (Dcpu.FieldType,String)]
 parsed = head $ rights [a]

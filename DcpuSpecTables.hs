@@ -13,6 +13,9 @@ data FieldType = RegA | RegB | OptionalWord
 
 type UserState = ( Bool )
 
+defaultstate :: UserState
+defaultstate = (False)
+
 -- Compute a string of ones and zeroes from the byte value.
 -- (Using this so the table here matches the dcpu spec document.)
 toString = concat . map show . drop 3 . bitsFromByte

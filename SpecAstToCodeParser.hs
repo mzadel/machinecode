@@ -50,12 +50,13 @@ specFieldToCodeFieldParser convert statetransformer shouldparse (S.FieldVariable
         return C.FieldNothing
 
 -- convert one spec to a parser for that spec
-specToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> S.InstructionSpec a -> Parser u (C.Instruction a b)
-specToParser convert statetransformer shouldparse (S.InstructionSpec name fields) = do
+specToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> u -> S.InstructionSpec a -> Parser u (C.Instruction a b)
+specToParser convert statetransformer shouldparse defaultstate (S.InstructionSpec name fields) = do
+    putState defaultstate
     parsedfields <- sequence $ map (specFieldToCodeFieldParser convert statetransformer shouldparse) fields
     return (C.Instruction name parsedfields)
 
-specsToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> [S.InstructionSpec a] -> Parser u (C.Instruction a b)
-specsToParser convert statetransformer shouldparse specs = choice $ map (try . specToParser convert statetransformer shouldparse) specs
+specsToParser :: (String -> [Bit] -> b) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> u -> [S.InstructionSpec a] -> Parser u (C.Instruction a b)
+specsToParser convert statetransformer shouldparse defaultstate specs = choice $ map (try . specToParser convert statetransformer shouldparse defaultstate) specs
 
 -- vim:sw=4:ts=4:et:ai:
