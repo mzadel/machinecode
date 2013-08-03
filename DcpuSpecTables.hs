@@ -8,66 +8,64 @@ module DcpuSpecTables where
 import BitList (bitsFromByte)
 import Data.Bit (Bit)
 
-data FieldType = RegA | RegB | OptionalWord
+data FieldType = RegA | RegB | RegADataWord | RegBDataWord
     deriving (Show)
 
-type UserState = ( Bool )
+-- UserState is the internal state of the code parser as it's going through an
+-- instruction.  For dcpu, the flag values are
+-- (parse next word for reg A, parse next word for reg B)
+type UserState = ( Bool, Bool )
 
+-- the default state that is used at the beginning of each instruction
 defaultstate :: UserState
-defaultstate = (False)
+defaultstate = (False,False)
 
 -- Compute a string of ones and zeroes from the byte value.
 -- (Using this so the table here matches the dcpu spec document.)
 toString = concat . map show . drop 3 . bitsFromByte
 
-instrspecs' :: [ ( String, String ) ]
-instrspecs' = [
+instrspecs :: [ ( String, String ) ]
+instrspecs = [
 
-        ( "AaaaaaBbbbb" ++ toString 0x01, "SET b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x02, "ADD b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x03, "SUB b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x04, "MUL b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x05, "MLI b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x06, "DIV b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x07, "DVI b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x08, "MOD b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x09, "MDI b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0a, "AND b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0b, "BOR b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0c, "XOR b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0d, "SHR b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0e, "ASR b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x0f, "SHL b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x10, "IFB b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x11, "IFC b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x12, "IFE b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x13, "IFN b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x14, "IFG b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x15, "IFA b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x16, "IFL b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x17, "IFU b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x1a, "ADX b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x1b, "SBX b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x1e, "STI b, a" ),
-        ( "AaaaaaBbbbb" ++ toString 0x1f, "STD b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x01 ++ " Regadatawordxxxx Regbdatawordxxxx", "SET b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x02 ++ " Regadatawordxxxx Regbdatawordxxxx", "ADD b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x03 ++ " Regadatawordxxxx Regbdatawordxxxx", "SUB b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x04 ++ " Regadatawordxxxx Regbdatawordxxxx", "MUL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x05 ++ " Regadatawordxxxx Regbdatawordxxxx", "MLI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x06 ++ " Regadatawordxxxx Regbdatawordxxxx", "DIV b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x07 ++ " Regadatawordxxxx Regbdatawordxxxx", "DVI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x08 ++ " Regadatawordxxxx Regbdatawordxxxx", "MOD b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x09 ++ " Regadatawordxxxx Regbdatawordxxxx", "MDI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0a ++ " Regadatawordxxxx Regbdatawordxxxx", "AND b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0b ++ " Regadatawordxxxx Regbdatawordxxxx", "BOR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0c ++ " Regadatawordxxxx Regbdatawordxxxx", "XOR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0d ++ " Regadatawordxxxx Regbdatawordxxxx", "SHR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0e ++ " Regadatawordxxxx Regbdatawordxxxx", "ASR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0f ++ " Regadatawordxxxx Regbdatawordxxxx", "SHL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x10 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFB b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x11 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFC b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x12 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFE b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x13 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFN b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x14 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFG b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x15 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFA b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x16 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x17 ++ " Regadatawordxxxx Regbdatawordxxxx", "IFU b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1a ++ " Regadatawordxxxx Regbdatawordxxxx", "ADX b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1b ++ " Regadatawordxxxx Regbdatawordxxxx", "SBX b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1e ++ " Regadatawordxxxx Regbdatawordxxxx", "STI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1f ++ " Regadatawordxxxx Regbdatawordxxxx", "STD b, a" ),
 
-        ( "Aaaaaa" ++ toString 0x01 ++ " 00000", "JSR a" ),
-        ( "Aaaaaa" ++ toString 0x08 ++ " 00000", "INT a" ),
-        ( "Aaaaaa" ++ toString 0x09 ++ " 00000", "IAG a" ),
-        ( "Aaaaaa" ++ toString 0x0a ++ " 00000", "IAS a" ),
-        ( "Aaaaaa" ++ toString 0x0b ++ " 00000", "RFI a" ),
-        ( "Aaaaaa" ++ toString 0x0c ++ " 00000", "IAQ a" ),
-        ( "Aaaaaa" ++ toString 0x10 ++ " 00000", "HWN a" ),
-        ( "Aaaaaa" ++ toString 0x11 ++ " 00000", "HWQ a" ),
-        ( "Aaaaaa" ++ toString 0x12 ++ " 00000", "HWI a" )
+        ( "Aaaaaa" ++ toString 0x01 ++ " 00000 Regadatawordxxxx", "JSR a" ),
+        ( "Aaaaaa" ++ toString 0x08 ++ " 00000 Regadatawordxxxx", "INT a" ),
+        ( "Aaaaaa" ++ toString 0x09 ++ " 00000 Regadatawordxxxx", "IAG a" ),
+        ( "Aaaaaa" ++ toString 0x0a ++ " 00000 Regadatawordxxxx", "IAS a" ),
+        ( "Aaaaaa" ++ toString 0x0b ++ " 00000 Regadatawordxxxx", "RFI a" ),
+        ( "Aaaaaa" ++ toString 0x0c ++ " 00000 Regadatawordxxxx", "IAQ a" ),
+        ( "Aaaaaa" ++ toString 0x10 ++ " 00000 Regadatawordxxxx", "HWN a" ),
+        ( "Aaaaaa" ++ toString 0x11 ++ " 00000 Regadatawordxxxx", "HWQ a" ),
+        ( "Aaaaaa" ++ toString 0x12 ++ " 00000 Regadatawordxxxx", "HWI a" )
 
     ]
-
--- append an optional value field to each instruction since any one could
--- feature an optional data word depending on the registers
-instrspecs = map appendoptionalfield instrspecs'
-    where
-        appendoptionalfield (spec,label) = ( spec ++ "Dddddddddddddddd", label )
 
 -- Compute a bit list from an int value.  I'm expressing these in hex values
 -- so they match the dcpu instruction specification, so they'll be easier to
@@ -99,22 +97,22 @@ fieldlabeltable = [
         ( "Aaaaaa", toRegABits 0x0d, ( RegA, "[Z]" ),                          id ),
         ( "Aaaaaa", toRegABits 0x0e, ( RegA, "[I]" ),                          id ),
         ( "Aaaaaa", toRegABits 0x0f, ( RegA, "[J]" ),                          id ),
-        ( "Aaaaaa", toRegABits 0x10, ( RegA, "[A + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x11, ( RegA, "[B + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x12, ( RegA, "[C + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x13, ( RegA, "[X + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x14, ( RegA, "[Y + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x15, ( RegA, "[Z + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x16, ( RegA, "[I + next word]" ),              parsenextword ),
-        ( "Aaaaaa", toRegABits 0x17, ( RegA, "[J + next word]" ),              parsenextword ),
+        ( "Aaaaaa", toRegABits 0x10, ( RegA, "[A + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x11, ( RegA, "[B + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x12, ( RegA, "[C + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x13, ( RegA, "[X + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x14, ( RegA, "[Y + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x15, ( RegA, "[Z + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x16, ( RegA, "[I + next word]" ),              parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x17, ( RegA, "[J + next word]" ),              parsenextwordA ),
         ( "Aaaaaa", toRegABits 0x18, ( RegA, "(POP / [SP++])" ),               id ),
         ( "Aaaaaa", toRegABits 0x19, ( RegA, "[SP] / PEEK" ),                  id ),
-        ( "Aaaaaa", toRegABits 0x1a, ( RegA, "[SP + next word] / PICK n" ),    parsenextword ),
+        ( "Aaaaaa", toRegABits 0x1a, ( RegA, "[SP + next word] / PICK n" ),    parsenextwordA ),
         ( "Aaaaaa", toRegABits 0x1b, ( RegA, "SP" ),                           id ),
         ( "Aaaaaa", toRegABits 0x1c, ( RegA, "PC" ),                           id ),
         ( "Aaaaaa", toRegABits 0x1d, ( RegA, "EX" ),                           id ),
-        ( "Aaaaaa", toRegABits 0x1e, ( RegA, "[next word]" ),                  parsenextword ),
-        ( "Aaaaaa", toRegABits 0x1f, ( RegA, "next word (literal)" ),          parsenextword ),
+        ( "Aaaaaa", toRegABits 0x1e, ( RegA, "[next word]" ),                  parsenextwordA ),
+        ( "Aaaaaa", toRegABits 0x1f, ( RegA, "next word (literal)" ),          parsenextwordA ),
 
         ( "Aaaaaa", toRegABits 0x20, ( RegA, "literal -1" ),                   id ),
         ( "Aaaaaa", toRegABits 0x21, ( RegA, "literal 0" ),                    id ),
@@ -165,37 +163,40 @@ fieldlabeltable = [
         ( "Bbbbb",  toRegBBits 0x0d, ( RegB, "[Z]" ),                          id ),
         ( "Bbbbb",  toRegBBits 0x0e, ( RegB, "[I]" ),                          id ),
         ( "Bbbbb",  toRegBBits 0x0f, ( RegB, "[J]" ),                          id ),
-        ( "Bbbbb",  toRegBBits 0x10, ( RegB, "[A + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x11, ( RegB, "[B + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x12, ( RegB, "[C + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x13, ( RegB, "[X + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x14, ( RegB, "[Y + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x15, ( RegB, "[Z + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x16, ( RegB, "[I + next word]" ),              parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x17, ( RegB, "[J + next word]" ),              parsenextword ),
+        ( "Bbbbb",  toRegBBits 0x10, ( RegB, "[A + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x11, ( RegB, "[B + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x12, ( RegB, "[C + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x13, ( RegB, "[X + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x14, ( RegB, "[Y + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x15, ( RegB, "[Z + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x16, ( RegB, "[I + next word]" ),              parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x17, ( RegB, "[J + next word]" ),              parsenextwordB ),
         ( "Bbbbb",  toRegBBits 0x18, ( RegB, "(PUSH / [--SP])" ),              id ),
         ( "Bbbbb",  toRegBBits 0x19, ( RegB, "[SP] / PEEK" ),                  id ),
-        ( "Bbbbb",  toRegBBits 0x1a, ( RegB, "[SP + next word] / PICK n" ),    parsenextword ),
+        ( "Bbbbb",  toRegBBits 0x1a, ( RegB, "[SP + next word] / PICK n" ),    parsenextwordB ),
         ( "Bbbbb",  toRegBBits 0x1b, ( RegB, "SP" ),                           id ),
         ( "Bbbbb",  toRegBBits 0x1c, ( RegB, "PC" ),                           id ),
         ( "Bbbbb",  toRegBBits 0x1d, ( RegB, "EX" ),                           id ),
-        ( "Bbbbb",  toRegBBits 0x1e, ( RegB, "[next word]" ),                  parsenextword ),
-        ( "Bbbbb",  toRegBBits 0x1f, ( RegB, "next word (literal)" ),          parsenextword ),
+        ( "Bbbbb",  toRegBBits 0x1e, ( RegB, "[next word]" ),                  parsenextwordB ),
+        ( "Bbbbb",  toRegBBits 0x1f, ( RegB, "next word (literal)" ),          parsenextwordB ),
 
-        ( "Dddddddddddddddd", [], ( OptionalWord, "value"), id )
+        ( "Regadatawordxxxx", [], ( RegADataWord, "next word"), id ),
+        ( "Regbdatawordxxxx", [], ( RegBDataWord, "next word"), id )
 
     ]
     where
         -- set the flag in the user state to true to indicate that it should
-        -- parse the Dddddddddddddddd field
-        parsenextword = \_ -> (True)
+        -- expect the Regadatawordxxxx or Regbdatawordxxxx
+        parsenextwordA = \(a,b) -> (True,b)
+        parsenextwordB = \(a,b) -> (a,True)
 
 -- answer true if a field with this spec should be parsed given the current
 -- state
 shouldparsefield :: String -> UserState -> Bool
 shouldparsefield "Aaaaaa" _ = True
 shouldparsefield "Bbbbb" _ = True
-shouldparsefield "Dddddddddddddddd" (flag) = flag
+shouldparsefield "Regadatawordxxxx" (a,b) = a
+shouldparsefield "Regbdatawordxxxx" (a,b) = b
 
 
 
