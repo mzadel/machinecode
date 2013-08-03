@@ -16,7 +16,7 @@ import Data.Bit
 matchtableentries :: [( String, [Bit], a, u->u )] -> String -> [Bit] -> [( String, [Bit], a, u->u )]
 matchtableentries table specstring parsedbits = filter ismatch table
     where
-        ismatch (s,b,_,_) = s == specstring && (b == parsedbits || null parsedbits)
+        ismatch (s,b,_,_) = s == specstring && (b == parsedbits || null b)
 
 -- take a spec string and the bits found in them, and return a label
 -- based on the lookup table
