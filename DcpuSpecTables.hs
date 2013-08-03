@@ -164,7 +164,9 @@ fieldlabeltable = [
         ( "Bbbbb",  toRegBBits 0x1c, ( RegB, "PC" ),                           "" ),
         ( "Bbbbb",  toRegBBits 0x1d, ( RegB, "EX" ),                           "" ),
         ( "Bbbbb",  toRegBBits 0x1e, ( RegB, "[next word]" ),                  "Dddddddddddddddd" ),
-        ( "Bbbbb",  toRegBBits 0x1f, ( RegB, "next word (literal)" ),          "Dddddddddddddddd" )
+        ( "Bbbbb",  toRegBBits 0x1f, ( RegB, "next word (literal)" ),          "Dddddddddddddddd" ),
+
+        ( "Dddddddddddddddd", [], ( OptionalWord, "value "), "" )
 
     ]
 
