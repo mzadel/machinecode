@@ -38,7 +38,7 @@ codeparser :: [(String,String)] -> [( String, [Bit], a, b->b )] -> Parser [C.Ins
 codeparser instrspecs fieldlabeltable = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
-        instructionparser = specsToParser labeler specasts
+        instructionparser = specsToParser labeler statetransformer specasts
         labeler = fieldlabeler fieldlabeltable
         statetransformer = getstatetransform fieldlabeltable
 
