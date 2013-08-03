@@ -17,6 +17,35 @@ toString = concat . map show . drop 3 . bitsFromByte
 
 instrspecs :: [ ( String, String ) ]
 instrspecs = [
+
+        ( "AaaaaaBbbbb" ++ toString 0x01, "SET b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x02, "ADD b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x03, "SUB b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x04, "MUL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x05, "MLI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x06, "DIV b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x07, "DVI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x08, "MOD b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x09, "MDI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0a, "AND b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0b, "BOR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0c, "XOR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0d, "SHR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0e, "ASR b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x0f, "SHL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x10, "IFB b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x11, "IFC b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x12, "IFE b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x13, "IFN b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x14, "IFG b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x15, "IFA b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x16, "IFL b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x17, "IFU b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1a, "ADX b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1b, "SBX b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1e, "STI b, a" ),
+        ( "AaaaaaBbbbb" ++ toString 0x1f, "STD b, a" ),
+
         ( "Aaaaaa " ++ toString 0x01 ++ " 00000", "JSR a" ),
         ( "Aaaaaa " ++ toString 0x08 ++ " 00000", "INT a" ),
         ( "Aaaaaa " ++ toString 0x09 ++ " 00000", "IAG a" ),
@@ -26,6 +55,7 @@ instrspecs = [
         ( "Aaaaaa " ++ toString 0x10 ++ " 00000", "HWN a" ),
         ( "Aaaaaa " ++ toString 0x11 ++ " 00000", "HWQ a" ),
         ( "Aaaaaa " ++ toString 0x12 ++ " 00000", "HWI a" )
+
     ]
 
 -- Compute a bit list from an int value.  I'm expressing these in hex values
