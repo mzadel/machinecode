@@ -15,7 +15,7 @@ import Data.Bit
 
 -- take a spec string and the bits found in them, and return an interpretation
 -- based on the lookup table
-fieldlabeler :: [( String, [Bit], a, String )] -> String -> [Bit] -> a
+fieldlabeler :: [( String, [Bit], a, b->b )] -> String -> [Bit] -> a
 fieldlabeler table specstring parsedbits = head matchinglabels
     where
         matchinglabels = map extractlabel matchingtuples
@@ -23,7 +23,7 @@ fieldlabeler table specstring parsedbits = head matchinglabels
         matchingtuples = filter matches table
         matches (s,b,l,x) = s == specstring && b == parsedbits
 
-codeparser :: [(String,String)] -> [( String, [Bit], a, String )] -> Parser [C.Instruction String a]
+codeparser :: [(String,String)] -> [( String, [Bit], a, b->b )] -> Parser [C.Instruction String a]
 codeparser instrspecs fieldlabeltable = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
