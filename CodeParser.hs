@@ -34,7 +34,7 @@ getstatetransform table specstring parsedbits = head matchingstatetransforms
         extractstatetransform (_,_,_,f) = f
         matchingtuples = matchtableentries table specstring parsedbits
 
-codeparser :: [(String,String)] -> [( String, [Bit], a, u->u )] -> Parser u [C.Instruction String a]
+codeparser :: [(String,a)] -> [( String, [Bit], b, u->u )] -> Parser u [C.Instruction a b]
 codeparser instrspecs fieldlabeltable = many $ instructionparser
     where
         specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
