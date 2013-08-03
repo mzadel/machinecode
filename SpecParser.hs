@@ -35,14 +35,14 @@ field = do
 
 -- generate a parser that will convert from a spec string to an InstructionSpec
 -- AST.  Also needs the interpretation of the instruction (ie the opcode).
-parserfromspecstringtoast :: String -> Parser InstructionSpec
+parserfromspecstringtoast :: a -> Parser (InstructionSpec a)
 parserfromspecstringtoast description = do
     spaces -- leading whitespace in the spec string
     fields <- many field
     eof
     return (InstructionSpec description fields)
 
-specToAst :: String -> String -> Either ParseError InstructionSpec
+specToAst :: String -> a -> Either ParseError (InstructionSpec a)
 specToAst spec label = parse parser "path N/A" spec
     where
         parser = parserfromspecstringtoast label

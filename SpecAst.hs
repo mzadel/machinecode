@@ -5,11 +5,9 @@
 
 module SpecAst where
 
--- maybe change these to Field a and InstructionSpec a so you don't commit to a
--- String type
 data Field = FieldLiteral String | FieldVariable String
     deriving (Show)
-data InstructionSpec = InstructionSpec String [Field]
+data InstructionSpec a = InstructionSpec a [Field]
     deriving (Show)
 
 -- Field: string is the parseable string "0100" or "Aaaa"
