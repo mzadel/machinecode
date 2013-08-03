@@ -183,10 +183,10 @@ fieldlabeltable = [
 
 -- collect these "should parse?" judgements in one separate table since it
 -- should be per-field-type I think
-shouldparse :: String -> UserState -> Bool
-shouldparse "Aaaaaa" _ = True
-shouldparse "Bbbbb" _ = True
-shouldparse "Dddddddddddddddd" (flag) = flag
+shouldparsefield :: String -> UserState -> Bool
+shouldparsefield "Aaaaaa" _ = True
+shouldparsefield "Bbbbb" _ = True
+shouldparsefield "Dddddddddddddddd" (flag) = flag
 
 
 
