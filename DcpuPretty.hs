@@ -25,7 +25,7 @@ instructionbits (Instruction _ fields) = concat $ map fieldbits fields
 -- Dcpu instructions are labeled by strings, so we can set the label type to
 -- that here
 instructionString :: Show a => Instruction a b -> String
-instructionString instr = (bitstostring $ instructionbits instr) ++ " " ++ (show $ label instr) ++ "\n"
+instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (60-(length $ instructionbits instr)) ' ') ++ (show $ label instr) ++ "\n"
     where
         label (Instruction thelabel _) = thelabel
 
