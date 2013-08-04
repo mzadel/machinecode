@@ -3,7 +3,7 @@
 -- DcpuPretty2.hs
 --
 
-module DcpPretty2 where
+module DcpuPretty2 where
 
 import qualified DcpuSpecTables as Dcpu
 import CodeAst
