@@ -7,6 +7,7 @@ module DcpuPretty where
 
 import qualified DcpuSpecTables as Dcpu
 import CodeAst
+import BitList (bitstostring,bitsToWord16)
 
 labeltostring :: Show a => Field (Dcpu.FieldType, a) -> String
 labeltostring (FieldLiteral _) = ""
