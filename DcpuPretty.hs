@@ -5,7 +5,6 @@
 
 module DcpuPretty where
 
-import qualified DcpuSpecTables as Dcpu
 import CodeAst
 import Data.Bit
 import Data.Word (Word16)
@@ -25,17 +24,15 @@ fieldbits (FieldNothing) = []
 instructionbits :: Instruction a b -> [Bit]
 instructionbits (Instruction _ fields) = concat $ map fieldbits fields
 
--- Dcpu instructions are labeled by strings, so we can set the label type to
--- that here
 instructionString :: Show a => Instruction a b -> String
 instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (labelcolumn-(length $ instructionbits instr)) ' ') ++ (show $ label instr) ++ "\n"
     where
         label (Instruction thelabel _) = thelabel
 
-fieldstring :: Show a => Field (Dcpu.FieldType, a) -> (String,String)
+fieldstring :: Show a => Field a -> (String,String)
 fieldstring field = ( bitstostring $ fieldbits field, labeltostring field )
 
-fieldbitoffsets :: [Field (Dcpu.FieldType, a)] -> [Int]
+fieldbitoffsets :: [Field a] -> [Int]
 fieldbitoffsets fields = init $ scanl (+) 0 fieldlengths
     where
         fieldlength (FieldLiteral bs) = length bs
@@ -48,7 +45,7 @@ shouldshowfield (FieldLiteral _) = False
 shouldshowfield (FieldVariable _ _) = True
 shouldshowfield (FieldNothing) = False
 
-ppfieldlist :: Show a => [Field (Dcpu.FieldType, a)] -> String
+ppfieldlist :: Show a => [Field a] -> String
 ppfieldlist fieldlist = concat $ map indent tostrings
     where
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
@@ -56,7 +53,7 @@ ppfieldlist fieldlist = concat $ map indent tostrings
         tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
-ppinstr :: Show a => Instruction String (Dcpu.FieldType, a) -> String
+ppinstr :: Show a => Instruction String a -> String
 ppinstr instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
     where
         fields (Instruction _ thefields) = thefields
