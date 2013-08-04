@@ -3,7 +3,7 @@
 -- DcpuPretty.hs
 --
 
-module DcpuPretty (ppinstr) where
+module DcpuPretty where
 
 import qualified DcpuSpecTables as Dcpu
 import CodeAst
@@ -77,14 +77,6 @@ tohex bs = concat $ map onechar (byfours bs)
         onechar (1:1:0:1:bs) = "d   "
         onechar (1:1:1:0:bs) = "e   "
         onechar (1:1:1:1:bs) = "f   "
-
-labeltostring :: Show a => Field (Dcpu.FieldType, a) -> String
-labeltostring (FieldLiteral _) = ""
-labeltostring (FieldNothing) = ""
-labeltostring (FieldVariable (Dcpu.RegA,label) bs) = "Register A: " ++ show label
-labeltostring (FieldVariable (Dcpu.RegB,label) bs) = "Register B: " ++ show label
-labeltostring (FieldVariable (Dcpu.RegADataWord,label) bs) = "Register A data: " ++ bitstostring bs ++ " (" ++ (show $ bitsToWord16 bs) ++ ")"
-labeltostring (FieldVariable (Dcpu.RegBDataWord,label) bs) = "Register B data: " ++ bitstostring bs ++ " (" ++ (show $ bitsToWord16 bs) ++ ")"
 
 fieldstring :: Show a => Field (Dcpu.FieldType, a) -> (String,String)
 fieldstring field = ( bitstostring $ fieldbits field, labeltostring field )
