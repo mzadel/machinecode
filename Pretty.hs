@@ -5,6 +5,9 @@
 
 module Pretty where
 
+import Data.Bit (Bit)
+import Data.Word (Word16)
+
 bitstostring :: [Bit] -> String
 bitstostring = concat . map show
 
