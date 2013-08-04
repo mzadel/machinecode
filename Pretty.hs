@@ -3,7 +3,7 @@
 -- Pretty.hs
 --
 
-module Pretty where
+module Pretty (printInstruction) where
 
 import CodeAst
 import Data.Bit
@@ -70,16 +70,16 @@ shouldshowfield (FieldLiteral _) = False
 shouldshowfield (FieldVariable _ _) = True
 shouldshowfield (FieldNothing) = False
 
-ppfieldlist :: Show a => (Field a -> String) -> [Field a] -> String
-ppfieldlist labeltostring fieldlist = concat $ map indent tostrings
+printFieldList :: Show a => (Field a -> String) -> [Field a] -> String
+printFieldList labeltostring fieldlist = concat $ map indent tostrings
     where
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
         filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
         tostrings = map (\(i,f) -> (i,fieldstring labeltostring f)) filtered
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
-ppinstr :: Show a => (Field a -> String) -> Instruction String a -> String
-ppinstr labeltostring instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist labeltostring $ fields instr) ++ "\n"
+printInstruction :: Show a => (Field a -> String) -> Instruction String a -> String
+printInstruction labeltostring instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (printFieldList labeltostring $ fields instr) ++ "\n"
     where
         fields (Instruction _ thefields) = thefields
 

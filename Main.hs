@@ -4,7 +4,7 @@
 --
 
 import qualified DcpuSpecTables as Dcpu
-import Pretty
+import qualified Pretty
 import DcpuPretty
 import BitList (bitsFromByteList)
 import CodeAst
@@ -30,7 +30,7 @@ parsed :: [Instruction String (Dcpu.FieldType,String)]
 parsed = head $ rights [a]
 
 main = do
-    mapM_ (putStr . ppinstr labeltostring) parsed
+    mapM_ (putStr . Pretty.printInstruction labeltostring) parsed
 
 
 -- vim:sw=4:ts=4:et:ai:
