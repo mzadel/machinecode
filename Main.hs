@@ -30,7 +30,6 @@ parsed :: [Instruction String (Dcpu.FieldType,String)]
 parsed = head $ rights [a]
 
 main = do
-    print $ length parsed
     mapM_ (putStr . ppinstr labeltostring) parsed
 
 
