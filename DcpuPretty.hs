@@ -5,57 +5,15 @@
 
 module DcpuPretty where
 
+import qualified DcpuSpecTables as Dcpu
 import CodeAst
-import Data.Bit
-import Data.Word (Word16)
-import Data.Bits
-import Pretty
 
--- given the code ast for one instruction, return a string that pretty prints it
--- todo: split out the generic parts of this from the dcpu-specific parts
-
-labelcolumn = 50
-
-fieldbits :: Field a -> [Bit]
-fieldbits (FieldLiteral bs) = bs
-fieldbits (FieldVariable _ bs) = bs
-fieldbits (FieldNothing) = []
-
-instructionbits :: Instruction a b -> [Bit]
-instructionbits (Instruction _ fields) = concat $ map fieldbits fields
-
-instructionString :: Show a => Instruction a b -> String
-instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (labelcolumn-(length $ instructionbits instr)) ' ') ++ (show $ label instr) ++ "\n"
-    where
-        label (Instruction thelabel _) = thelabel
-
-fieldstring :: Show a => Field a -> (String,String)
-fieldstring field = ( bitstostring $ fieldbits field, labeltostring field )
-
-fieldbitoffsets :: [Field a] -> [Int]
-fieldbitoffsets fields = init $ scanl (+) 0 fieldlengths
-    where
-        fieldlength (FieldLiteral bs) = length bs
-        fieldlength (FieldVariable _ bs) = length bs
-        fieldlength (FieldNothing) = 0
-        fieldlengths = map fieldlength fields
-
-shouldshowfield :: Field a -> Bool
-shouldshowfield (FieldLiteral _) = False
-shouldshowfield (FieldVariable _ _) = True
-shouldshowfield (FieldNothing) = False
-
-ppfieldlist :: Show a => [Field a] -> String
-ppfieldlist fieldlist = concat $ map indent tostrings
-    where
-        zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
-        filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
-        tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
-        indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
-
-ppinstr :: Show a => Instruction String a -> String
-ppinstr instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
-    where
-        fields (Instruction _ thefields) = thefields
+labeltostring :: Show a => Field (Dcpu.FieldType, a) -> String
+labeltostring (FieldLiteral _) = ""
+labeltostring (FieldNothing) = ""
+labeltostring (FieldVariable (Dcpu.RegA,label) bs) = "Register A: " ++ show label
+labeltostring (FieldVariable (Dcpu.RegB,label) bs) = "Register B: " ++ show label
+labeltostring (FieldVariable (Dcpu.RegADataWord,label) bs) = "Register A data: " ++ bitstostring bs ++ " (" ++ (show $ bitsToWord16 bs) ++ ")"
+labeltostring (FieldVariable (Dcpu.RegBDataWord,label) bs) = "Register B data: " ++ bitstostring bs ++ " (" ++ (show $ bitsToWord16 bs) ++ ")"
 
 -- vim:sw=4:ts=4:et:ai:
