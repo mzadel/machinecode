@@ -10,8 +10,6 @@ import CodeAst
 import BitList (bitstostring,bitsToWord16)
 
 labeltostring :: Show a => Field (Dcpu.FieldType, a) -> String
-labeltostring (FieldLiteral _) = ""
-labeltostring (FieldNothing) = ""
 labeltostring (FieldVariable (Dcpu.RegA,label) bs) = "Register A: " ++ show label
 labeltostring (FieldVariable (Dcpu.RegB,label) bs) = "Register B: " ++ show label
 labeltostring (FieldVariable (Dcpu.RegADataWord,label) bs) = "Register A data: " ++ bitstostring bs ++ " (" ++ (show $ bitsToWord16 bs) ++ ")"
