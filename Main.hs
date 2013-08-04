@@ -4,6 +4,7 @@
 --
 
 import qualified DcpuSpecTables as Dcpu
+import Pretty
 import DcpuPretty
 import BitList (bitsFromByteList)
 import CodeAst
@@ -30,7 +31,7 @@ parsed = head $ rights [a]
 
 main = do
     print $ length parsed
-    mapM_ (putStr . ppinstr) parsed
+    mapM_ (putStr . ppinstr labeltostring) parsed
 
 
 -- vim:sw=4:ts=4:et:ai:
