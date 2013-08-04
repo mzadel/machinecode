@@ -32,7 +32,7 @@ bitSpecToParser bitchars = sequence (map bitchartoparser bitchars)
 -- spec field, (field string -> parsed contents -> output field type) -> Parser for that field type
 specFieldToCodeFieldParser :: (String -> [Bit] -> a) -> (String -> [Bit] -> (u -> u)) -> (String -> u -> Bool) -> S.Field -> Parser u (C.Field a)
 
-specFieldToCodeFieldParser convert _ _ (S.FieldLiteral specstring) = do
+specFieldToCodeFieldParser _ _ _ (S.FieldLiteral specstring) = do
     bitsparsed <- bitSpecToParser specstring
     return (C.FieldLiteral bitsparsed)
 

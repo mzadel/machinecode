@@ -7,13 +7,12 @@ module Pretty (printInstruction) where
 
 import CodeAst
 import Data.Bit
-import Data.Word (Word16)
-import Data.Bits
-import BitList (bitstostring,bitsToWord16)
+import BitList (bitstostring)
 
 -- given the code ast for one instruction, return a string that pretty prints it
 -- todo: split out the generic parts of this from the dcpu-specific parts
 
+labelcolumn :: Int
 labelcolumn = 50
 
 tohex :: [Bit] -> String
@@ -21,25 +20,25 @@ tohex bs = concat $ map onechar (byfours bs)
     where
         byfours :: [Bit] -> [[Bit]]
         byfours [] = []
-        byfours bs = a : byfours b
+        byfours bitlist = a : byfours b
             where
-                (a,b) = splitAt 4 bs
-        onechar (0:0:0:0:bs) = "0   "
-        onechar (0:0:0:1:bs) = "1   "
-        onechar (0:0:1:0:bs) = "2   "
-        onechar (0:0:1:1:bs) = "3   "
-        onechar (0:1:0:0:bs) = "4   "
-        onechar (0:1:0:1:bs) = "5   "
-        onechar (0:1:1:0:bs) = "6   "
-        onechar (0:1:1:1:bs) = "7   "
-        onechar (1:0:0:0:bs) = "8   "
-        onechar (1:0:0:1:bs) = "9   "
-        onechar (1:0:1:0:bs) = "a   "
-        onechar (1:0:1:1:bs) = "b   "
-        onechar (1:1:0:0:bs) = "c   "
-        onechar (1:1:0:1:bs) = "d   "
-        onechar (1:1:1:0:bs) = "e   "
-        onechar (1:1:1:1:bs) = "f   "
+                (a,b) = splitAt 4 bitlist
+        onechar (0:0:0:0:_) = "0   "
+        onechar (0:0:0:1:_) = "1   "
+        onechar (0:0:1:0:_) = "2   "
+        onechar (0:0:1:1:_) = "3   "
+        onechar (0:1:0:0:_) = "4   "
+        onechar (0:1:0:1:_) = "5   "
+        onechar (0:1:1:0:_) = "6   "
+        onechar (0:1:1:1:_) = "7   "
+        onechar (1:0:0:0:_) = "8   "
+        onechar (1:0:0:1:_) = "9   "
+        onechar (1:0:1:0:_) = "a   "
+        onechar (1:0:1:1:_) = "b   "
+        onechar (1:1:0:0:_) = "c   "
+        onechar (1:1:0:1:_) = "d   "
+        onechar (1:1:1:0:_) = "e   "
+        onechar (1:1:1:1:_) = "f   "
 
 fieldbits :: Field a -> [Bit]
 fieldbits (FieldLiteral bs) = bs
@@ -74,7 +73,7 @@ printFieldList :: Show a => (Field a -> String) -> [Field a] -> String
 printFieldList labeltostring fieldlist = concat $ map indent tostrings
     where
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
-        filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
+        filtered = filter (\(_,f) -> shouldshowfield f) zippedfields
         tostrings = map (\(i,f) -> (i,fieldstring labeltostring f)) filtered
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 

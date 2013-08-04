@@ -7,7 +7,6 @@ module CodeParser (codeparser) where
 
 import SpecAstToCodeParser
 import SpecParser
-import qualified SpecAst as S
 import qualified CodeAst as C
 import Data.Either (rights)
 import Text.Parsec.Prim
@@ -37,7 +36,7 @@ getstatetransform table specstring parsedbits = head matchingstatetransforms
 codeparser :: [(String,a)] -> [( String, [Bit], b, u->u )] -> (String -> u -> Bool) -> u -> Parser u [C.Instruction a b]
 codeparser instrspecs fieldlabeltable shouldparse defaultstate = many $ instructionparser
     where
-        specasts = rights [ specToAst spec label | (spec,label) <- instrspecs ]
+        specasts = rights [ specToAst thespec thelabel | (thespec,thelabel) <- instrspecs ]
         instructionparser = specsToParser labeler statetransformer shouldparse defaultstate specasts
         labeler = fieldlabeler fieldlabeltable
         statetransformer = getstatetransform fieldlabeltable

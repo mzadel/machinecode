@@ -43,9 +43,9 @@ parserfromspecstringtoast description = do
     return (InstructionSpec description fields)
 
 specToAst :: String -> a -> Either ParseError (InstructionSpec a)
-specToAst spec label = parse parser "path N/A" spec
+specToAst thespec thelabel = parse parser "path N/A" thespec
     where
-        parser = parserfromspecstringtoast label
+        parser = parserfromspecstringtoast thelabel
 
 
 

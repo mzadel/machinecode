@@ -7,6 +7,7 @@ module DcpuSpecTables where
 
 import BitList (bitsFromByte)
 import Data.Bit (Bit)
+import Data.Word (Word8)
 
 data FieldType = RegA | RegB | RegADataWord | RegBDataWord
     deriving (Show)
@@ -22,6 +23,7 @@ defaultstate = (False,False)
 
 -- Compute a string of ones and zeroes from the byte value.
 -- (Using this so the table here matches the dcpu spec document.)
+toString :: Word8 -> String
 toString = concat . map show . drop 3 . bitsFromByte
 
 instrspecs :: [ ( String, String ) ]
@@ -70,7 +72,9 @@ instrspecs = [
 -- Compute a bit list from an int value.  I'm expressing these in hex values
 -- so they match the dcpu instruction specification, so they'll be easier to
 -- compare.
+toRegABits :: Word8 -> [Bit]
 toRegABits = drop 2 . bitsFromByte
+toRegBBits :: Word8 -> [Bit]
 toRegBBits = drop 3 . bitsFromByte
 
 
@@ -183,16 +187,16 @@ fieldlabeltable = [
     where
         -- set the flag in the user state to true to indicate that it should
         -- expect the Regadatawordxxxx or Regbdatawordxxxx
-        parsenextwordA = \(a,b) -> (True,b)
-        parsenextwordB = \(a,b) -> (a,True)
+        parsenextwordA = \(_,b) -> (True,b)
+        parsenextwordB = \(a,_) -> (a,True)
 
 -- answer true if a field with this spec should be parsed given the current
 -- state
 shouldparsefield :: String -> UserState -> Bool
 shouldparsefield "Aaaaaa" _ = True
 shouldparsefield "Bbbbb" _ = True
-shouldparsefield "Regadatawordxxxx" (a,b) = a
-shouldparsefield "Regbdatawordxxxx" (a,b) = b
+shouldparsefield "Regadatawordxxxx" (a,_) = a
+shouldparsefield "Regbdatawordxxxx" (_,b) = b
 
 
 
