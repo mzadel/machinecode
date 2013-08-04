@@ -54,8 +54,8 @@ instructionString instr = (bitstostring $ instructionbits instr) ++ (replicate (
     where
         label (Instruction thelabel _) = thelabel
 
-fieldstring :: Show a => Field a -> (String,String)
-fieldstring field = ( bitstostring $ fieldbits field, labeltostring field )
+fieldstring :: Show a => (Field a -> String) -> Field a -> (String,String)
+fieldstring labeltostring field = ( bitstostring $ fieldbits field, labeltostring field )
 
 fieldbitoffsets :: [Field a] -> [Int]
 fieldbitoffsets fields = init $ scanl (+) 0 fieldlengths
@@ -70,16 +70,16 @@ shouldshowfield (FieldLiteral _) = False
 shouldshowfield (FieldVariable _ _) = True
 shouldshowfield (FieldNothing) = False
 
-ppfieldlist :: Show a => [Field a] -> String
-ppfieldlist fieldlist = concat $ map indent tostrings
+ppfieldlist :: Show a => (Field a -> String) -> [Field a] -> String
+ppfieldlist labeltostring fieldlist = concat $ map indent tostrings
     where
         zippedfields = zip (fieldbitoffsets fieldlist) fieldlist
         filtered = filter (\(i,f) -> shouldshowfield f) zippedfields
-        tostrings = map (\(i,f) -> (i,fieldstring f)) filtered
+        tostrings = map (\(i,f) -> (i,fieldstring labeltostring f)) filtered
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
-ppinstr :: Show a => Instruction String a -> String
-ppinstr instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist $ fields instr) ++ "\n"
+ppinstr :: Show a => (Field a -> String) -> Instruction String a -> String
+ppinstr labeltostring instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (ppfieldlist labeltostring $ fields instr) ++ "\n"
     where
         fields (Instruction _ thefields) = thefields
 
