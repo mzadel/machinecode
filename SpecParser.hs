@@ -10,9 +10,7 @@ import Text.Parsec.Prim
 import Text.Parsec.Char
 import Text.Parsec.Combinator
 import Text.Parsec.Error
-import StreamInstance ()
-
-type Parser = Parsec String ()
+import Text.Parsec.String
 
 -- parse a subpart of the whole spec, and return an ast node that represents this
 fieldliteral :: Parser Field

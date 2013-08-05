@@ -14,7 +14,7 @@ import qualified CodeAst as C
 import Data.Bit
 import Text.Parsec.Prim
 import Text.Parsec.Combinator (choice)
-import StreamInstance ()
+import Text.Parsec.String () -- for Stream instance
 
 type Parser u = Parsec [Bit] u
 
