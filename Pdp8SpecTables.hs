@@ -26,7 +26,6 @@ instrspecs = [
 
         ( "1110 00 00 000 0", "NOP" ), -- can I rely on this being tried first and overriding the OPR case?
         ( "1110 AL MK Rrr C", "OPR (group 1)" ),
-        -- need to figure out how to group these bits -- are there any disallowed combinations?
 
         ( "1111 A Sss 0 OH 0", "OPR (group 2, or group) (reverse sensing bit is 0)" ),
         ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group) (reverse sensing bit is 1)" ),
