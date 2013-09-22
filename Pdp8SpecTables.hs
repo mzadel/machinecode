@@ -8,7 +8,7 @@ module Pdp8SpecTables where
 import Data.Bit (Bit)
 
 -- do I even really need a field type?  I can just write out strings for the labels...
-data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Skip_and | Osr | Hlt
+data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Skip_and | Osr | Hlt | Mqa | Sca | Mql | Code
     deriving (Show)
 
 type UserState = ()
@@ -31,7 +31,7 @@ instrspecs = [
         ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group) (reverse sensing bit is 1)" ),
         ( "111 100 001 000", "SKP: Skip Unconditionally" ),
 
-        ( "1111 A Mqx Cod 1", "OPR (group 3)" )
+        ( "1111 A QSP Cod 1", "OPR (group 3)" )
 
     ]
 
@@ -84,7 +84,26 @@ fieldlabeltable = [
         ( "O",       [1],       ( Osr, "OSR: logically 'or' front-panel switches with AC" ), id ),
 
         ( "H",       [0],       ( Hlt, "---" ),                                 id ),
-        ( "H",       [1],       ( Hlt, "HLT" ),                                 id )
+        ( "H",       [1],       ( Hlt, "HLT" ),                                 id ),
+
+        -- Group 3
+        ( "Q",       [0],       ( Mqa, "---" ),                                 id ),
+        ( "Q",       [1],       ( Mqa, "MQA: Multiplier Quotient with AC" ),    id ),
+
+        ( "S",       [0],       ( Sca, "---" ),                                 id ),
+        ( "S",       [1],       ( Sca, "SCA: Step counter load into AC" ),      id ),
+
+        ( "P",       [0],       ( Mql, "---" ),                                 id ),
+        ( "P",       [1],       ( Mql, "MQL: Multiplier Quotient Load" ),       id ),
+
+        ( "Cod",     [0,0,0],   ( Code, "No operation" ),                       id ),
+        ( "Cod",     [0,0,1],   ( Code, "SCL: Step Counter Load (immediate word follows)" ), id ),
+        ( "Cod",     [0,1,0],   ( Code, "MUY: Multiply" ),                      id ),
+        ( "Cod",     [0,1,1],   ( Code, "DVI: Divide" ),                        id ),
+        ( "Cod",     [1,0,0],   ( Code, "NMI: Normalize" ),                     id ),
+        ( "Cod",     [1,0,1],   ( Code, "SHL: Shift left (immediate word follows)" ), id ),
+        ( "Cod",     [1,1,0],   ( Code, "ASR: Arithmetic shift right" ),        id ),
+        ( "Cod",     [1,1,1],   ( Code, "LSR: Logical shift right " ),          id ),
 
     ]
 
