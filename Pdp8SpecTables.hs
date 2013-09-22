@@ -25,13 +25,13 @@ instrspecs = [
         ( "110 DeviceFnc", "IOT" ),
 
         ( "1110 00 00 000 0", "NOP" ), -- can I rely on this being tried first and overriding the OPR case?
-        ( "1110 AL MK Rrr C", "OPR (group 1)" ),
+        ( "1110 A L M K Rrr C", "OPR (group 1)" ),
 
-        ( "1111 A Sss 0 OH 0", "OPR (group 2, or group) (reverse sensing bit is 0)" ),
-        ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group) (reverse sensing bit is 1)" ),
+        ( "1111 A Sss 0 O H 0", "OPR (group 2, or group) (reverse sensing bit is 0)" ),
+        ( "1111 A Ssx 1 O H 0", "OPR (group 2, and group) (reverse sensing bit is 1)" ),
         ( "111 100 001 000", "SKP: Skip Unconditionally" ),
 
-        ( "1111 A QSP Cod 1", "OPR (group 3)" )
+        ( "1111 A Q S P Cod 1", "OPR (group 3)" )
 
     ]
 
