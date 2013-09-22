@@ -8,7 +8,7 @@ module Pdp8SpecTables where
 import Data.Bit (Bit)
 
 -- do I even really need a field type?  I can just write out strings for the labels...
-data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Oh | Skip_and | Osr | Hlt
+data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Skip_and | Osr | Hlt
     deriving (Show)
 
 type UserState = ()
@@ -28,7 +28,7 @@ instrspecs = [
         ( "1110 AL MK Rrr C", "OPR (group 1)" ),
         -- need to figure out how to group these bits -- are there any disallowed combinations?
 
-        ( "1111 A Sss 0 Oh 0", "OPR (group 2, or group)" ),
+        ( "1111 A Sss 0 OH 0", "OPR (group 2, or group)" ),
 
         ( "111 100 001 000", "SKP – Skip Unconditionally" ),
         ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group)" ),
@@ -76,11 +76,6 @@ fieldlabeltable = [
         ( "Sss",     [1,0,0],   ( Skip_or, "SMA – Skip on AC < 0 (or group)" ), id ),
         ( "Sss",     [0,1,0],   ( Skip_or, "SZA – Skip on AC = 0 (or group)" ), id ),
         ( "Sss",     [0,0,1],   ( Skip_or, "SNL – Skip on L != 0 (or group)" ), id ),
-
-        -- I think I should split these up... see the pdp 8 quick ref
-        ( "Oh",      [0,0],     ( Oh, "---" ),                                  id ),
-        ( "Oh",      [1,0],     ( Oh, "OSR – logically 'or' front-panel switches with AC" ), id ),
-        ( "Oh",      [0,1],     ( Oh, "HLT" ),                                  id ),
 
         ( "Ssx",     [0,0,0],   ( Skip_and, "---" ),                               id ),
         ( "Ssx",     [1,0,0],   ( Skip_and, "SPA – Skip on AC >= 0 (and group)" ), id ),
