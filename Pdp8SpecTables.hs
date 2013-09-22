@@ -123,7 +123,7 @@ fieldlabeltable = [
         ( "Cod",     [1,1,0],   ( Code, "ASR: Arithmetic shift right" ),        id ),
         ( "Cod",     [1,1,1],   ( Code, "LSR: Logical shift right " ),          id ),
 
-        ( "Immediatexxx", [],   ( Immediate, "immediate value" ),               id ),
+        ( "Immediatexxx", [],   ( Immediate, "immediate value" ),               id )
 
     ]
     where
