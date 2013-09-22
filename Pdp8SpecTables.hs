@@ -41,6 +41,8 @@ instrspecs = [
         -- table that has an additional label for a given bitstring that
         -- describes the whole string and not just the individual fields.
         -- that would handle the NOP and SKP specs above
+        --
+        -- maybe the label string column could be a function instead?
 
         -- also: it would be nice to label the reverse sensing bit as a field,
         -- and then have it determine which field to parse (Sss or Ssx).
