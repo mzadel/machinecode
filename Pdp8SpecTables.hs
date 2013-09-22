@@ -13,6 +13,9 @@ data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Ro
 
 type UserState = ( Bool )
 
+defaultstate :: UserState
+defaultstate = (False)
+
 instrspecs :: [ ( String, String ) ]
 instrspecs = [
 
