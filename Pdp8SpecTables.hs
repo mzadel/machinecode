@@ -8,7 +8,7 @@ module Pdp8SpecTables where
 import Data.Bit (Bit)
 
 -- do I even really need a field type?  I can just write out strings for the labels...
-data FieldType = Offset | I | Z | Device | Function | Cl | Cm | Rotate | Iac | Cla | Skip_or | Oh | Skip_and | Osr | Hlt
+data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Oh | Skip_and | Osr | Hlt
     deriving (Show)
 
 type UserState = ()
@@ -25,35 +25,41 @@ instrspecs = [
         ( "110 DeviceFnc", "IOT" ),
 
         ( "1110 00 00 000 0", "NOP" ), -- can I rely on this being tried first and overriding the OPR case?
-        ( "1110 Cl Cm Rrr C", "OPR (group 1)" ),
+        ( "1110 AL MK Rrr C", "OPR (group 1)" ),
         -- need to figure out how to group these bits -- are there any disallowed combinations?
 
-        ( "1111 L Sss 0 Oh 0", "OPR (group 2, or group)" ),
+        ( "1111 A Sss 0 Oh 0", "OPR (group 2, or group)" ),
 
         ( "111 100 001 000", "SKP – Skip Unconditionally" ),
-        ( "1111 L Ssx 1 OH 0", "OPR (group 2, and group)" ),
+        ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group)" ),
 
-        ( "1111 L Mqx Cod 1", "OPR (group 3)" )
+        ( "1111 A Mqx Cod 1", "OPR (group 3)" )
 
     ]
 
 fieldlabeltable :: [( String, [Bit], (FieldType, String), UserState->UserState )]
 fieldlabeltable = [
 
-        ( "Z",       [],        ( Z,        "Z"),                               id ),
-        ( "I",       [],        ( I,        "I"),                               id ),
+        ( "Z",       [0],       ( Z,        "Page selector: page 0"),           id ),
+        ( "Z",       [1],       ( Z,        "Page selector: current page"),     id ),
+        ( "I",       [0],       ( I,        "Address mode: direct"),            id ),
+        ( "I",       [1],       ( I,        "Address mode: indirect"),          id ),
         ( "Offsett", [],        ( Offset,   "offset"),                          id ),
         ( "Device",  [],        ( Device,   "device"),                          id ),
         ( "Fnc",     [],        ( Function, "function"),                        id ),
 
         -- Group 1
-        -- Should these be split?
-        ( "Cl",      [0,0],     ( Cl, "---" ),                                  id ),
-        ( "Cl",      [1,0],     ( Cl, "CLA: Clear Accumulator" ),               id ),
-        ( "Cl",      [0,1],     ( Cl, "CLL: Clear the L Bit" ),                 id ),
+        ( "A",       [0],       ( CLA, "---" ),                                 id ),
+        ( "A",       [1]        ( CLA, "CLA: Clear Accumulator" ),              id ),
 
-        ( "Cm",      [0,1],     ( Cm, "CMA – Ones Complement Accumulator" ),    id ),
-        ( "Cm",      [1,0],     ( Cm, "CML – Complement L Bit" ),               id ),
+        ( "L",       [0],       ( CLL, "---" ),                                 id ),
+        ( "L",       [1],       ( CLL, "CLL: Clear the L Bit" ),                id ),
+
+        ( "M",       [0],       ( CMA, "---" ),                                 id ),
+        ( "M",       [1],       ( CMA, "CMA – Ones Complement Accumulator" ),   id ),
+
+        ( "K",       [0],       ( CML, "---" ),                                 id ),
+        ( "K",       [1],       ( CML, "CML – Complement L Bit" ),              id ),
 
         ( "Rrr",     [0,0,0],   ( Rotate, "---" ),                              id ),
         ( "Rrr",     [1,0,0],   ( Rotate, "RAR: Rotate <L,AC> Right" ),         id ),
@@ -66,9 +72,6 @@ fieldlabeltable = [
         ( "C",       [1],       ( Iac, "IAC – Increment <L,AC>" ),              id ),
 
         -- Group 2
-        ( "L",       [0],       ( Cla, "---" ),                                 id ),
-        ( "L",       [1],       ( Cla, "CLA: Clear Accumulator" ),              id ),
-
         ( "Sss",     [0,0,0],   ( Skip_or, "---" ),                             id ),
         ( "Sss",     [1,0,0],   ( Skip_or, "SMA – Skip on AC < 0 (or group)" ), id ),
         ( "Sss",     [0,1,0],   ( Skip_or, "SZA – Skip on AC = 0 (or group)" ), id ),
