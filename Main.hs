@@ -3,9 +3,9 @@
 -- Main.hs
 --
 
-import qualified DcpuSpecTables as Dcpu
+import qualified Pdp8SpecTables as Pdp8
 import qualified Pretty
-import DcpuPretty
+--import DcpuPretty
 import BitList (bitsFromByteList)
 import CodeAst
 import CodeParser
@@ -24,13 +24,13 @@ input = bitsFromByteList [
     0x63, 0x81, 0xeb, 0x81
     ]
 
-dcpuParser :: Parser Dcpu.UserState [Instruction String (Dcpu.FieldType, String)]
-dcpuParser = codeparser Dcpu.instrspecs Dcpu.fieldlabeltable Dcpu.shouldparsefield Dcpu.defaultstate
+pdp8Parser :: Parser Pdp8.UserState [Instruction String (Pdp8.FieldType, String)]
+pdp8Parser = codeparser Pdp8.instrspecs Pdp8.fieldlabeltable Pdp8.shouldparsefield Pdp8.defaultstate
 
-a :: Either ParseError [Instruction String (Dcpu.FieldType,String)]
-a = runParser dcpuParser Dcpu.defaultstate "file N/A" input
+a :: Either ParseError [Instruction String (Pdp8.FieldType,String)]
+a = runParser pdp8Parser Pdp8.defaultstate "file N/A" input
 
-parsed :: [Instruction String (Dcpu.FieldType,String)]
+parsed :: [Instruction String (Pdp8.FieldType,String)]
 parsed = head $ rights [a]
 
 main :: IO ()
