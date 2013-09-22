@@ -34,6 +34,12 @@ bitsFromByte byte = [ fromBool $ testBit byte i | i <- [7,6..0] ]
 bitsFromByteList :: [Word8] -> [Bit]
 bitsFromByteList = concatMap bitsFromByte
 
+bitsFromOctalWord :: Word16 -> [Bit]
+bitsFromOctalWord word = [ fromBool $ testBit word i | i <- [11,10..0] ]
+
+bitsFromOctalWordList :: [Word16] -> [Bit]
+bitsFromOctalWordList = concatMap bitsFromOctalWord
+
 -- is there already a function for this?
 bitsFromByteString :: B.ByteString -> [Bit]
 bitsFromByteString bs = case B.uncons bs of
