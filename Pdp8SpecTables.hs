@@ -47,17 +47,17 @@ fieldlabeltable = [
         ( "Fnc",     [],        ( Function, "function"),                        id ),
 
         -- Group 1
-        ( "A",       [0],       ( CLA, "---" ),                                 id ),
-        ( "A",       [1]        ( CLA, "CLA: Clear Accumulator" ),              id ),
+        ( "A",       [0],       ( Cla, "---" ),                                 id ),
+        ( "A",       [1]        ( Cla, "CLA: Clear Accumulator" ),              id ),
 
-        ( "L",       [0],       ( CLL, "---" ),                                 id ),
-        ( "L",       [1],       ( CLL, "CLL: Clear the L Bit" ),                id ),
+        ( "L",       [0],       ( Cll, "---" ),                                 id ),
+        ( "L",       [1],       ( Cll, "CLL: Clear the L Bit" ),                id ),
 
-        ( "M",       [0],       ( CMA, "---" ),                                 id ),
-        ( "M",       [1],       ( CMA, "CMA: Ones Complement Accumulator" ),    id ),
+        ( "M",       [0],       ( Cma, "---" ),                                 id ),
+        ( "M",       [1],       ( Cma, "CMA: Ones Complement Accumulator" ),    id ),
 
-        ( "K",       [0],       ( CML, "---" ),                                 id ),
-        ( "K",       [1],       ( CML, "CML: Complement L Bit" ),               id ),
+        ( "K",       [0],       ( Cml, "---" ),                                 id ),
+        ( "K",       [1],       ( Cml, "CML: Complement L Bit" ),               id ),
 
         ( "Rrr",     [0,0,0],   ( Rotate, "---" ),                              id ),
         ( "Rrr",     [1,0,0],   ( Rotate, "RAR: Rotate <L,AC> Right" ),         id ),
