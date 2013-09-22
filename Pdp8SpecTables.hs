@@ -54,28 +54,28 @@ fieldlabeltable = [
         ( "L",       [1],       ( CLL, "CLL: Clear the L Bit" ),                id ),
 
         ( "M",       [0],       ( CMA, "---" ),                                 id ),
-        ( "M",       [1],       ( CMA, "CMA: Ones Complement Accumulator" ),   id ),
+        ( "M",       [1],       ( CMA, "CMA: Ones Complement Accumulator" ),    id ),
 
         ( "K",       [0],       ( CML, "---" ),                                 id ),
-        ( "K",       [1],       ( CML, "CML: Complement L Bit" ),              id ),
+        ( "K",       [1],       ( CML, "CML: Complement L Bit" ),               id ),
 
         ( "Rrr",     [0,0,0],   ( Rotate, "---" ),                              id ),
         ( "Rrr",     [1,0,0],   ( Rotate, "RAR: Rotate <L,AC> Right" ),         id ),
         ( "Rrr",     [0,1,0],   ( Rotate, "RAL: Rotate <L,AC> Left" ),          id ),
-        ( "Rrr",     [1,0,1],   ( Rotate, "RTR: Rotate <L,AC> Right Twice" ),  id ),
-        ( "Rrr",     [0,1,1],   ( Rotate, "RTL: Rotate <L,AC> Left Twice" ),   id ),
-        ( "Rrr",     [0,0,1],   ( Rotate, "BSW: Byte Swap 6-bit 'bytes'" ),    id ),
+        ( "Rrr",     [1,0,1],   ( Rotate, "RTR: Rotate <L,AC> Right Twice" ),   id ),
+        ( "Rrr",     [0,1,1],   ( Rotate, "RTL: Rotate <L,AC> Left Twice" ),    id ),
+        ( "Rrr",     [0,0,1],   ( Rotate, "BSW: Byte Swap 6-bit 'bytes'" ),     id ),
 
         ( "C",       [0],       ( Iac, "---" ),                                 id ),
-        ( "C",       [1],       ( Iac, "IAC: Increment <L,AC>" ),              id ),
+        ( "C",       [1],       ( Iac, "IAC: Increment <L,AC>" ),               id ),
 
         -- Group 2
         ( "Sss",     [0,0,0],   ( Skip_or, "---" ),                             id ),
-        ( "Sss",     [1,0,0],   ( Skip_or, "SMA: Skip on AC < 0 (or group)" ), id ),
-        ( "Sss",     [0,1,0],   ( Skip_or, "SZA: Skip on AC = 0 (or group)" ), id ),
-        ( "Sss",     [0,0,1],   ( Skip_or, "SNL: Skip on L != 0 (or group)" ), id ),
+        ( "Sss",     [1,0,0],   ( Skip_or, "SMA: Skip on AC < 0 (or group)" ),  id ),
+        ( "Sss",     [0,1,0],   ( Skip_or, "SZA: Skip on AC = 0 (or group)" ),  id ),
+        ( "Sss",     [0,0,1],   ( Skip_or, "SNL: Skip on L != 0 (or group)" ),  id ),
 
-        ( "Ssx",     [0,0,0],   ( Skip_and, "---" ),                               id ),
+        ( "Ssx",     [0,0,0],   ( Skip_and, "---" ),                              id ),
         ( "Ssx",     [1,0,0],   ( Skip_and, "SPA: Skip on AC >= 0 (and group)" ), id ),
         ( "Ssx",     [0,1,0],   ( Skip_and, "SNA: Skip on AC != 0 (and group)" ), id ),
         ( "Ssx",     [0,0,1],   ( Skip_and, "SZL: Skip on L = 0 (and group)" ),   id ),
