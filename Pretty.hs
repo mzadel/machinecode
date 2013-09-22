@@ -40,6 +40,23 @@ tohex bs = concat $ map onechar (byfours bs)
         onechar (1:1:1:0:_) = "e   "
         onechar (1:1:1:1:_) = "f   "
 
+tooctal :: [Bit] -> String
+tooctal bs = concat $ map onechar (bythrees bs)
+    where
+        bythrees :: [Bit] -> [[Bit]]
+        bythrees [] = []
+        bythrees bitlist = a : bythrees b
+            where
+                (a,b) = splitAt 3 bitlist
+        onechar (0:0:0:_) = "0  "
+        onechar (0:0:1:_) = "1  "
+        onechar (0:1:0:_) = "2  "
+        onechar (0:1:1:_) = "3  "
+        onechar (1:0:0:_) = "4  "
+        onechar (1:0:1:_) = "5  "
+        onechar (1:1:0:_) = "6  "
+        onechar (1:1:1:_) = "7  "
+
 fieldbits :: Field a -> [Bit]
 fieldbits (FieldLiteral bs) = bs
 fieldbits (FieldVariable _ bs) = bs
@@ -78,7 +95,7 @@ printFieldList labeltostring fieldlist = concat $ map indent tostrings
         indent (i,(bs,label)) = (replicate i ' ') ++ bs ++ (replicate (labelcolumn-i-(length bs)) ' ') ++ label ++ "\n"
 
 printInstruction :: Show a => (Field a -> String) -> Instruction String a -> String
-printInstruction labeltostring instr = (tohex $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (printFieldList labeltostring $ fields instr) ++ "\n"
+printInstruction labeltostring instr = (tooctal $ instructionbits instr) ++ "\n" ++ (instructionString instr) ++ (printFieldList labeltostring $ fields instr) ++ "\n"
     where
         fields (Instruction _ thefields) = thefields
 
