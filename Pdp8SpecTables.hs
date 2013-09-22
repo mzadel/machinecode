@@ -29,9 +29,8 @@ instrspecs = [
         -- need to figure out how to group these bits -- are there any disallowed combinations?
 
         ( "1111 A Sss 0 OH 0", "OPR (group 2, or group) (reverse sensing bit is 0)" ),
-
-        ( "111 100 001 000", "SKP – Skip Unconditionally" ),
         ( "1111 A Ssx 1 OH 0", "OPR (group 2, and group) (reverse sensing bit is 1)" ),
+        ( "111 100 001 000", "SKP – Skip Unconditionally" ),
 
         ( "1111 A Mqx Cod 1", "OPR (group 3)" )
 
