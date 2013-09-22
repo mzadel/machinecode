@@ -8,10 +8,10 @@ module Pdp8SpecTables where
 import Data.Bit (Bit)
 
 -- do I even really need a field type?  I can just write out strings for the labels...
-data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Skip_and | Osr | Hlt | Mqa | Sca | Mql | Code
+data FieldType = Offset | I | Z | Device | Function | Cla | Cll | Cma | Cml | Rotate | Iac | Skip_or | Skip_and | Osr | Hlt | Mqa | Sca | Mql | Code | Immediate
     deriving (Show)
 
-type UserState = ()
+type UserState = ( Bool )
 
 instrspecs :: [ ( String, String ) ]
 instrspecs = [
@@ -35,7 +35,7 @@ instrspecs = [
         -- the case during parsing.
         ( "111 100 001 000", "SKP: Skip Unconditionally" ),
 
-        ( "1111 A Q S P Cod 1", "OPR (group 3)" )
+        ( "1111 A Q S P Cod 1   Immediatexxx", "OPR (group 3)" )
 
     ]
 
@@ -101,20 +101,25 @@ fieldlabeltable = [
         ( "P",       [1],       ( Mql, "MQL: Multiplier Quotient Load" ),       id ),
 
         ( "Cod",     [0,0,0],   ( Code, "No operation" ),                       id ),
-        ( "Cod",     [0,0,1],   ( Code, "SCL: Step Counter Load (immediate word follows)" ), id ),
+        ( "Cod",     [0,0,1],   ( Code, "SCL: Step Counter Load (immediate word follows)" ), parseimmediate ),
         ( "Cod",     [0,1,0],   ( Code, "MUY: Multiply" ),                      id ),
         ( "Cod",     [0,1,1],   ( Code, "DVI: Divide" ),                        id ),
         ( "Cod",     [1,0,0],   ( Code, "NMI: Normalize" ),                     id ),
-        ( "Cod",     [1,0,1],   ( Code, "SHL: Shift left (immediate word follows)" ), id ),
+        ( "Cod",     [1,0,1],   ( Code, "SHL: Shift left (immediate word follows)" ), parseimmediate ),
         ( "Cod",     [1,1,0],   ( Code, "ASR: Arithmetic shift right" ),        id ),
         ( "Cod",     [1,1,1],   ( Code, "LSR: Logical shift right " ),          id ),
 
+        ( "Immediatexxx", [],   ( Immediate, "immediate value" ),               id ),
+
     ]
+    where
+        parseimmediate = \_ -> ( True )
 
 -- todo: generate the list of all possible bit strings that this parses, and
 -- make sure it matches with all the valid strings that the pdp8 accepts
 
 shouldparsefield :: String -> UserState -> Bool
+shouldparsefield "Immediatexxx" (a) = a
 shouldparsefield _ _ = True
 
 -- vim:sw=4:ts=4:et:ai:
