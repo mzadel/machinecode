@@ -66,7 +66,7 @@ fieldlabeltable = [
 
         -- Group 1
         ( "A",       [0],       ( Cla, "---" ),                                 id ),
-        ( "A",       [1]        ( Cla, "CLA: Clear Accumulator" ),              id ),
+        ( "A",       [1],       ( Cla, "CLA: Clear Accumulator" ),              id ),
 
         ( "L",       [0],       ( Cll, "---" ),                                 id ),
         ( "L",       [1],       ( Cll, "CLL: Clear the L Bit" ),                id ),
