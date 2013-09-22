@@ -34,6 +34,17 @@ instrspecs = [
         -- take precedence over the other forms.  Need to confirm that that's
         -- the case during parsing.
         ( "111 100 001 000", "SKP: Skip Unconditionally" ),
+        -- consider having an additional "annotate instruction" function or
+        -- table that has an additional label for a given bitstring that
+        -- describes the whole string and not just the individual fields.
+        -- that would handle the NOP and SKP specs above
+
+        -- also: it would be nice to label the reverse sensing bit as a field,
+        -- and then have it determine which field to parse (Sss or Ssx).
+        -- That's not possible with the setup at the moment.  The userstate
+        -- only affects shouldparse.  I suppose you could list out both fields
+        -- in a spec and choose one based on the value of the reverse sensing
+        -- bit, but that's not very elegant or visually appealing.
 
         ( "1111 A Q S P Cod 1   Immediatexxx", "OPR (group 3)" )
 
